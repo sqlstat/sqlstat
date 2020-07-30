@@ -1,5 +1,7 @@
 package com.fan.sqlstat.model;
 
+import java.util.List;
+
 public class ProjectStat {
 
     public String projectName;
@@ -8,7 +10,9 @@ public class ProjectStat {
     public int sql;
     public int ctl;
     public int others;
-    public int sqlItem;
+    public int sqlItems;
+
+    public List<FileTarget> fileTargetList;
 
     @Override
     public String toString() {
