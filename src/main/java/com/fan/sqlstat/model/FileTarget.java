@@ -10,8 +10,14 @@ public class FileTarget {
     private File file;
     private FileType fileType;
 
+    //hit by rules
     private boolean target;
-    private List<Integer> hitList;
+
+    //sqlHits ；
+    private List<SqlHit> sqlHitList;
+
+    //sql num;
+    private int sqlItemNum;
 
     public FileTarget(String project, File file, FileType fileType){
         this.project = project;
@@ -51,11 +57,19 @@ public class FileTarget {
         this.target = target;
     }
 
-    public List<Integer> getHitList() {
-        return hitList;
+    public List<SqlHit> getSqlHitList() {
+        return sqlHitList;
     }
 
-    public void setHitList(List<Integer> hitList) {
-        this.hitList = hitList;
+    public void setSqlHitList(List<SqlHit> sqlHitList) {
+        this.sqlHitList = sqlHitList;
+    }
+
+    public int getSqlItemNum() {
+        return sqlItemNum;
+    }
+
+    public void setSqlItemNum(int sqlItemNum) {
+        this.sqlItemNum = sqlItemNum;
     }
 }

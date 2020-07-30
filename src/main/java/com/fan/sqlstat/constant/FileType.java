@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum FileType {
-    JAVA,C, XML, SHELL, SHELLWITHSQL, SQL, CTL, OTHERS, TASKEND;
+    JAVA,C, XML, SHELL, SQL, CTL, OTHERS, TASKEND;
 
     private static final Map<String, FileType> extentionMap = new HashMap<String, FileType>(){
         {

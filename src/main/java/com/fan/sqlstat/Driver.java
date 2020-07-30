@@ -4,6 +4,7 @@ import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.FileTarget;
 import com.fan.sqlstat.model.ProjectStat;
 import com.fan.sqlstat.model.ResultSet;
+import com.fan.sqlstat.service.OutService;
 import com.fan.sqlstat.util.FileUtil;
 import com.fan.sqlstat.util.ScanFileFilter;
 import com.fan.sqlstat.worker.FileScanWorker;
@@ -40,6 +41,9 @@ public class Driver {
     @Resource
     private ResultSet resultSet;
 
+    @Resource
+    private OutService outService;
+
     private BlockingQueue<FileTarget> blockingQueue;
 
     @PostConstruct
@@ -69,7 +73,7 @@ public class Driver {
         addPoison();
         countDownLatch.await();
         agggregateResult(resultSet);
-        printResult(resultSet);
+        outService.printResult(resultSet);
         executorService.shutdown();
     }
 
@@ -88,23 +92,24 @@ public class Driver {
                 if(resultStat == null){
                     resultMap.put(key, threadStat);
                 }else{
+                    resultStat.java += threadStat.java;
+                    resultStat.javaSqlNum += threadStat.javaSqlNum;
+                    resultStat.c += threadStat.c;
+                    resultStat.cSqlNum += threadStat.cSqlNum;
+                    resultStat.xml += threadStat.xml;
+                    resultStat.xmlSqlNum += threadStat.xmlSqlNum;
                     resultStat.shell += threadStat.shell;
-                    resultStat.shellWithSql += threadStat.shellWithSql;
+                    resultStat.shellSqlNum += threadStat.shellSqlNum;
                     resultStat.sql += threadStat.sql;
+                    resultStat.sqlSqlNum += threadStat.sqlSqlNum;
                     resultStat.ctl += threadStat.ctl;
                     resultStat.others += threadStat.others;
+                    resultStat.othersSqlNum += threadStat.othersSqlNum;
+                    resultStat.fileTargetList.addAll(threadStat.fileTargetList);
                 }
             });
         });
         resultSet.setResultMap(resultMap);
     }
-
-    private void printResult(ResultSet resultSet){
-        Map<String, ProjectStat> resultMap = resultSet.getResultMap();
-        logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++");
-        resultMap.forEach((key, projectStat) -> logger.info("{}", projectStat.toString()));
-        logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++");
-    }
-
 
 }

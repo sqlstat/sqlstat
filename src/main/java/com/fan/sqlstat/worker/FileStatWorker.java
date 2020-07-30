@@ -1,11 +1,12 @@
 package com.fan.sqlstat.worker;
 
-import com.fan.sqlstat.AppStart;
 import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.FileTarget;
 import com.fan.sqlstat.model.ProjectStat;
 import com.fan.sqlstat.model.ResultSet;
-import com.fan.sqlstat.util.FileUtil;
+import com.fan.sqlstat.service.check.ChechService;
+import com.fan.sqlstat.service.SqlStatChechService;
+import com.fan.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class FileStatWorker implements Runnable {
     @Override
     public void run() {
         logger.info("FileStatWorker Started");
+        ChechService chechService = SpringContext.getBean(SqlStatChechService.class);
 
         while(true){
             try {
@@ -46,30 +48,46 @@ public class FileStatWorker implements Runnable {
                 FileType fileType = fileTarget.getFileType();
                 logger.trace("project {}, filename {}, type {}", projectName, file.getName(), fileType);
 
-                Map<FileType, Integer> statMap = FileUtil.statFile(fileTarget);
-                int sql = statMap.get(FileType.SQL) == null ? 0 : statMap.get(FileType.SQL);
-                int shell = statMap.get(FileType.SHELL) == null ? 0 : statMap.get(FileType.SHELL);
-                int shellWithSql = statMap.get(FileType.SHELLWITHSQL) == null ? 0 : statMap.get(FileType.SHELLWITHSQL);
-                int ctl = statMap.get(FileType.CTL) == null ? 0 : statMap.get(FileType.CTL);
-                int others = statMap.get(FileType.OTHERS) == null ? 0 : statMap.get(FileType.OTHERS);
-
-                ProjectStat projectStat = threadMap.get(projectName);
-                if(projectStat == null){
-                    projectStat = new ProjectStat();
-                    projectStat.projectName = projectName;
-                    projectStat.sql = sql;
-                    projectStat.shell = shell;
-                    projectStat.shellWithSql = shellWithSql;
-                    projectStat.ctl = ctl;
-                    projectStat.others = others;
-                    threadMap.put(projectName, projectStat);
-                }else{
-                    projectStat.sql += sql;
-                    projectStat.shell += shell;
-                    projectStat.shellWithSql += shellWithSql;
-                    projectStat.ctl += ctl;
-                    projectStat.others += others;
+                fileTarget = chechService.check(fileTarget);
+                if(fileTarget.isTarget()){
+                    ProjectStat projectStat = threadMap.get(projectName);
+                    if(projectStat == null){
+                        projectStat = new ProjectStat();
+                        projectStat.projectName = projectName;
+                        threadMap.put(projectName, projectStat);
+                    }
+                    switch(fileTarget.getFileType()){
+                        case JAVA:
+                            projectStat.java += 1;
+                            projectStat.javaSqlNum += fileTarget.getSqlItemNum();
+                            break;
+                        case C:
+                            projectStat.c += 1;
+                            projectStat.cSqlNum += fileTarget.getSqlItemNum();
+                            break;
+                        case XML:
+                            projectStat.xml += 1;
+                            projectStat.xmlSqlNum += fileTarget.getSqlItemNum();break;
+                        case SHELL:
+                            projectStat.shell += 1;
+                            projectStat.shellSqlNum += fileTarget.getSqlItemNum();
+                            break;
+                        case SQL:
+                            projectStat.sql += 1;
+                            projectStat.sqlSqlNum += fileTarget.getSqlItemNum();
+                            break;
+                        case CTL:
+                            projectStat.ctl += 1;
+                            break;
+                        case OTHERS:
+                            projectStat.others += 1;
+                            projectStat.othersSqlNum += fileTarget.getSqlItemNum();
+                            break;
+                    }
+                    projectStat.fileTargetList.add(fileTarget);
                 }
+
+
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
