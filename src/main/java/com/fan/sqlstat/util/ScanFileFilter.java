@@ -17,8 +17,6 @@ public class ScanFileFilter implements FileFilter {
     @Value("${app.source.file.extentions}")
     private String sourceFileExtentions;
 
-
-
     public List<String> getFileExtentions(){
         String[] strArr = sourceFileExtentions.trim().split(";");
         return Arrays.asList(strArr);
