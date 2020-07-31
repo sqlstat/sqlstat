@@ -1,4 +1,4 @@
-package com.fan.sqlstat.service;
+package com.fan.sqlstat.service.check;
 
 import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.FileTarget;

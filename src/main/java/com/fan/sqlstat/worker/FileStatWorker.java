@@ -5,7 +5,7 @@ import com.fan.sqlstat.model.FileTarget;
 import com.fan.sqlstat.model.ProjectStat;
 import com.fan.sqlstat.model.ResultSet;
 import com.fan.sqlstat.service.check.ChechService;
-import com.fan.sqlstat.service.SqlStatChechService;
+import com.fan.sqlstat.service.check.SqlStatChechService;
 import com.fan.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
