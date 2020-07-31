@@ -1,5 +1,6 @@
 package com.fan.sqlstat;
 
+import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.util.RuleUtil;
 import com.fan.sqlstat.util.SpringContext;
@@ -14,6 +15,7 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -39,16 +41,29 @@ public class AppStart {
 
 
     @Bean(name="commonSqlRuleMap")
-    public Map<Integer, Rule> commonSqlRuleList() {
+    public Map<Integer, Rule> commonSqlRuleMap() {
         Map<Integer, Rule> ruleMap = RuleUtil.getRuleMap(env, "app.rule.sql.common");
         logger.debug("commonSqlRuleMap:{}", ruleMap);
         return ruleMap;
     }
 
     @Bean(name="ctlRuleMap")
-    public Map<Integer, Rule> ctlRuleList() {
+    public Map<Integer, Rule> ctlRuleMap() {
         Map<Integer, Rule> ruleMap = RuleUtil.getRuleMap(env, "app.rule.ctl");
         logger.debug("ctlRuleMap:{}", ruleMap);
+        return ruleMap;
+    }
+
+    @Bean(name="fileTypeRuleMap")
+    public Map<FileType, Map<Integer, Rule>> fileTypeRuleMap(){
+        Map<FileType, Map<Integer, Rule>> ruleMap = new HashMap<>();
+        ruleMap.put(FileType.CTL, ctlRuleMap());
+        ruleMap.put(FileType.JAVA, commonSqlRuleMap());
+        ruleMap.put(FileType.C, commonSqlRuleMap());
+        ruleMap.put(FileType.XML, commonSqlRuleMap());
+        ruleMap.put(FileType.SHELL, commonSqlRuleMap());
+        ruleMap.put(FileType.SQL, commonSqlRuleMap());
+        ruleMap.put(FileType.OTHERS, commonSqlRuleMap());
         return ruleMap;
     }
 }

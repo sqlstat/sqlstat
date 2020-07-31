@@ -22,11 +22,8 @@ public class CommonFileCheckService implements ChechService {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonFileCheckService.class);
 
-    @Resource(name="ctlRuleMap")
-    private Map<Integer, Rule> ctlRuleMap;
-
-    @Resource(name="commonSqlRuleMap")
-    private Map<Integer, Rule> commonSqlRuleMap;
+    @Resource(name="fileTypeRuleMap")
+    private Map<FileType, Map<Integer, Rule>> fileTypeRuleMap;
 
     @Override
     public FileTarget check(FileTarget fileTarget) {
@@ -37,7 +34,7 @@ public class CommonFileCheckService implements ChechService {
         logger.trace("filename:{}, text:\n{}", file.getAbsolutePath(), text);
         if(fileType.equals(FileType.JAVA) || fileType.equals(FileType.C) || fileType.equals(FileType.XML) ||
                 fileType.equals(FileType.SHELL) || fileType.equals(FileType.SQL) || fileType.equals(FileType.OTHERS)){
-            List<SqlHit> sqlHitList = hasSql(text);
+            List<SqlHit> sqlHitList = checkText(text, fileType);
             if(!sqlHitList.isEmpty()){
                 fileTarget.setTarget(true);
                 fileTarget.setSqlHitList(sqlHitList);
@@ -48,7 +45,7 @@ public class CommonFileCheckService implements ChechService {
             }
 
         }else if(fileType.equals(FileType.CTL)){
-            List<SqlHit> sqlHitList = isCtl(text);
+            List<SqlHit> sqlHitList = checkText(text,fileType);
             if(!sqlHitList.isEmpty()){
                 fileTarget.setTarget(true);
                 fileTarget.setSqlHitList(sqlHitList);
@@ -59,22 +56,10 @@ public class CommonFileCheckService implements ChechService {
         return fileTarget;
     }
 
-    private List<SqlHit> hasSql(String text){
+    private List<SqlHit> checkText(String text, FileType fileType){
         List resultList = new ArrayList<>();
-        commonSqlRuleMap.forEach((index, rule) ->{
-            String regex = rule.getRegex();
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(text);
-            if(matcher.find()){
-                resultList.add(new SqlHit(index, null));
-            }
-        });
-        return resultList;
-    }
-
-    private List<SqlHit> isCtl(String text){
-        List resultList = new ArrayList<>();
-        ctlRuleMap.forEach((index, rule) ->{
+        Map<Integer, Rule> ruleMap = fileTypeRuleMap.get(fileType);
+        ruleMap.forEach((index, rule) ->{
             String regex = rule.getRegex();
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(text);
