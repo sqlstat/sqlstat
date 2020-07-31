@@ -1,5 +1,6 @@
 package com.fan.sqlstat;
 
+import com.fan.sqlstat.util.RuleUtil;
 import com.fan.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,12 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ComponentScan
@@ -26,7 +26,7 @@ public class AppStart {
     private String name;
 
     @Resource
-    Environment env;
+    StandardEnvironment env;
 
     public static void main(String[] args) throws InterruptedException {
         AppStart appStart = SpringContext.getBean(AppStart.class);
@@ -37,25 +37,17 @@ public class AppStart {
     }
 
 
-    @Bean(name="commonSqlRuleList")
-    public List<String> commonSqlRuleList() {
-        List<String> list = new ArrayList<>();
-        int num = env.getProperty("app.rule.sql.common.num", Integer.class);
-        for(int i = 0; i < num; i++){
-            String str =  env.getProperty("app.rule.sql.common["+ i +"]");
-            list.add(str);
-        }
-        return list;
+    @Bean(name="commonSqlRuleMap")
+    public Map<Integer, String> commonSqlRuleList() {
+        Map<Integer, String> ruleMap = RuleUtil.getRuleMap(env, "app.rule.sql.common");
+        logger.debug("commonSqlRuleMap:{}", ruleMap);
+        return ruleMap;
     }
 
-    @Bean(name="ctlRuleList")
-    public List<String> ctlRuleList() {
-        List<String> list = new ArrayList<>();
-        int num = env.getProperty("app.rule.ctl.num", Integer.class);
-        for(int i = 0; i < num; i++){
-            String str =  env.getProperty("app.rule.ctl["+ i +"]");
-            list.add(str);
-        }
-        return list;
+    @Bean(name="ctlRuleMap")
+    public Map<Integer, String> ctlRuleList() {
+        Map<Integer, String> ruleMap = RuleUtil.getRuleMap(env, "app.rule.ctl");
+        logger.debug("ctlRuleMap:{}", ruleMap);
+        return ruleMap;
     }
 }
