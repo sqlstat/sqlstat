@@ -2,6 +2,7 @@ package com.fan.sqlstat.service.check;
 
 import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.FileTarget;
+import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.model.SqlHit;
 import com.fan.sqlstat.util.FileUtil;
 import org.slf4j.Logger;
@@ -22,10 +23,10 @@ public class CommonFileCheckService implements ChechService {
     private static final Logger logger = LoggerFactory.getLogger(CommonFileCheckService.class);
 
     @Resource(name="ctlRuleMap")
-    private Map<Integer, String> ctlRuleMap;
+    private Map<Integer, Rule> ctlRuleMap;
 
     @Resource(name="commonSqlRuleMap")
-    private Map<Integer, String> commonSqlRuleMap;
+    private Map<Integer, Rule> commonSqlRuleMap;
 
     @Override
     public FileTarget check(FileTarget fileTarget) {
@@ -60,7 +61,8 @@ public class CommonFileCheckService implements ChechService {
 
     private List<SqlHit> hasSql(String text){
         List resultList = new ArrayList<>();
-        commonSqlRuleMap.forEach((index, regex) ->{
+        commonSqlRuleMap.forEach((index, rule) ->{
+            String regex = rule.getRegex();
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(text);
             if(matcher.find()){
@@ -72,7 +74,8 @@ public class CommonFileCheckService implements ChechService {
 
     private List<SqlHit> isCtl(String text){
         List resultList = new ArrayList<>();
-        ctlRuleMap.forEach((index, regex) ->{
+        ctlRuleMap.forEach((index, rule) ->{
+            String regex = rule.getRegex();
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(text);
             if(matcher.find()){

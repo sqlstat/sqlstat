@@ -1,5 +1,6 @@
 package com.fan.sqlstat;
 
+import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.util.RuleUtil;
 import com.fan.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @Configuration
 @ComponentScan
-@PropertySource("classpath:application.properties")
+@PropertySource(value="classpath:application.properties", encoding="UTF-8")
 @Component
 public class AppStart {
     private static final Logger logger = LoggerFactory.getLogger(AppStart.class);
@@ -38,15 +39,15 @@ public class AppStart {
 
 
     @Bean(name="commonSqlRuleMap")
-    public Map<Integer, String> commonSqlRuleList() {
-        Map<Integer, String> ruleMap = RuleUtil.getRuleMap(env, "app.rule.sql.common");
+    public Map<Integer, Rule> commonSqlRuleList() {
+        Map<Integer, Rule> ruleMap = RuleUtil.getRuleMap(env, "app.rule.sql.common");
         logger.debug("commonSqlRuleMap:{}", ruleMap);
         return ruleMap;
     }
 
     @Bean(name="ctlRuleMap")
-    public Map<Integer, String> ctlRuleList() {
-        Map<Integer, String> ruleMap = RuleUtil.getRuleMap(env, "app.rule.ctl");
+    public Map<Integer, Rule> ctlRuleList() {
+        Map<Integer, Rule> ruleMap = RuleUtil.getRuleMap(env, "app.rule.ctl");
         logger.debug("ctlRuleMap:{}", ruleMap);
         return ruleMap;
     }
