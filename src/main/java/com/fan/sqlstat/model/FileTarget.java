@@ -72,4 +72,8 @@ public class FileTarget {
     public void setSqlItemNum(int sqlItemNum) {
         this.sqlItemNum = sqlItemNum;
     }
+
+    public void addSqlItemNum(){
+        this.sqlItemNum++;
+    }
 }

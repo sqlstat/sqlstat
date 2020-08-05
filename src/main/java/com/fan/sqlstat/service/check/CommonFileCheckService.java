@@ -5,13 +5,17 @@ import com.fan.sqlstat.model.FileTarget;
 import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.model.SqlHit;
 import com.fan.sqlstat.util.FileUtil;
+import com.fan.sqlstat.util.RuleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -19,11 +23,37 @@ import java.util.regex.Pattern;
 
 @Component
 public class CommonFileCheckService implements ChechService {
-
     private static final Logger logger = LoggerFactory.getLogger(CommonFileCheckService.class);
 
-    @Resource(name="fileTypeRuleMap")
+    @Resource(name="commonSqlRuleMap")
+    private Map<Integer, Rule> commonSqlRuleMap;
+
+    @Resource(name="ctlRuleMap")
+    private Map<Integer, Rule> ctlRuleMap;
+
     private Map<FileType, Map<Integer, Rule>> fileTypeRuleMap;
+    private Map<FileType, String> fileTypeRuleNameMap;
+
+    @PostConstruct
+    public void init(){
+        fileTypeRuleMap = new HashMap<>();
+        fileTypeRuleMap.put(FileType.CTL, ctlRuleMap);
+        fileTypeRuleMap.put(FileType.JAVA, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.C, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.XML, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.SHELL, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.SQL, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.OTHERS, commonSqlRuleMap);
+
+        fileTypeRuleNameMap = new HashMap<>();
+        fileTypeRuleNameMap.put(FileType.CTL, "ctlRuleMap");
+        fileTypeRuleNameMap.put(FileType.JAVA, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.C, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.XML, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.SHELL, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.SQL, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.OTHERS, "commonSqlRuleMap");
+    }
 
     @Override
     public FileTarget check(FileTarget fileTarget) {
@@ -34,18 +64,18 @@ public class CommonFileCheckService implements ChechService {
         logger.trace("filename:{}, text:\n{}", file.getAbsolutePath(), text);
         if(fileType.equals(FileType.JAVA) || fileType.equals(FileType.C) || fileType.equals(FileType.XML) ||
                 fileType.equals(FileType.SHELL) || fileType.equals(FileType.SQL) || fileType.equals(FileType.OTHERS)){
-            List<SqlHit> sqlHitList = checkText(text, fileType);
+            List<SqlHit> sqlHitList = checkText(text, fileType, false);
             if(!sqlHitList.isEmpty()){
                 fileTarget.setTarget(true);
                 fileTarget.setSqlHitList(sqlHitList);
                 //no sql parser
                 fileTarget.setSqlItemNum(0);
                 logger.info("{} is found, project:{}, file:{}, contain sql {}",
-                        fileTarget.getFileType(), projectName, file.getAbsolutePath(), fileTarget.isTarget());
+                        fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget());
             }
 
         }else if(fileType.equals(FileType.CTL)){
-            List<SqlHit> sqlHitList = checkText(text,fileType);
+            List<SqlHit> sqlHitList = checkText(text,fileType, false);
             if(!sqlHitList.isEmpty()){
                 fileTarget.setTarget(true);
                 fileTarget.setSqlHitList(sqlHitList);
@@ -56,15 +86,22 @@ public class CommonFileCheckService implements ChechService {
         return fileTarget;
     }
 
-    private List<SqlHit> checkText(String text, FileType fileType){
+    public List<SqlHit> checkText(String text, FileType fileType, boolean isSql){
         List resultList = new ArrayList<>();
         Map<Integer, Rule> ruleMap = fileTypeRuleMap.get(fileType);
+        String ruleName = fileTypeRuleNameMap.get(fileType);
         ruleMap.forEach((index, rule) ->{
             String regex = rule.getRegex();
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(text);
             if(matcher.find()){
-                resultList.add(new SqlHit(index, null));
+                String originalSql;
+                if(isSql){
+                    originalSql = text;
+                }else{
+                    originalSql = null;
+                }
+                resultList.add(new SqlHit(ruleName, index, originalSql));
             }
         });
         return resultList;

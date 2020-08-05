@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="s31">
+<typeAlias alias="UserPo"
+type="com.fan.demos.ibatis.data.po.UserPo"/>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select CHR(65) chr from dual;
+	</select>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select EXTRACT(YEAR from sysdate) from dual;
+	</select>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select a.*, b.* from test a, test b where a.id=b.id(+);
+	</select>
+</sqlMap>
+

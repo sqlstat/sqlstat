@@ -2,9 +2,6 @@ package com.fan.sqlstat.service.check;
 
 import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.FileTarget;
-import com.fan.sqlstat.service.check.ChechService;
-import com.fan.sqlstat.service.check.CommonFileCheckService;
-import com.fan.sqlstat.service.check.JavaFileCheckService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,12 +20,15 @@ public class SqlStatChechService implements ChechService {
     @Resource
     private JavaFileCheckService javaFileCheckService;
 
+    @Resource
+    private XmlCheckService xmlCheckService;
+
     @PostConstruct
     public void init(){
         chechServiceMap = new HashMap<>();
         chechServiceMap.put(FileType.JAVA, javaFileCheckService);
         chechServiceMap.put(FileType.C, commonFileCheckService);
-        chechServiceMap.put(FileType.XML, commonFileCheckService);
+        chechServiceMap.put(FileType.XML, xmlCheckService);
         chechServiceMap.put(FileType.SHELL, commonFileCheckService);
         chechServiceMap.put(FileType.SQL, commonFileCheckService);
         chechServiceMap.put(FileType.CTL, commonFileCheckService);

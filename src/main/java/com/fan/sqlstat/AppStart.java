@@ -54,16 +54,19 @@ public class AppStart {
         return ruleMap;
     }
 
-    @Bean(name="fileTypeRuleMap")
-    public Map<FileType, Map<Integer, Rule>> fileTypeRuleMap(){
-        Map<FileType, Map<Integer, Rule>> ruleMap = new HashMap<>();
-        ruleMap.put(FileType.CTL, ctlRuleMap());
-        ruleMap.put(FileType.JAVA, commonSqlRuleMap());
-        ruleMap.put(FileType.C, commonSqlRuleMap());
-        ruleMap.put(FileType.XML, commonSqlRuleMap());
-        ruleMap.put(FileType.SHELL, commonSqlRuleMap());
-        ruleMap.put(FileType.SQL, commonSqlRuleMap());
-        ruleMap.put(FileType.OTHERS, commonSqlRuleMap());
+    @Bean(name="targetSqlRuleMap")
+    public Map<Integer, Rule> targetSqlRuleMap() {
+        Map<Integer, Rule> ruleMap = RuleUtil.getRuleMap(env, "app.rule.sql.target");
+        logger.debug("targetSqlRuleMap:{}", ruleMap);
         return ruleMap;
+    }
+
+    @Bean(name="combinedRuleMap")
+    public Map<String, Map<Integer, Rule>> combinedRuleMap(){
+        Map<String, Map<Integer, Rule>> combinedRuleMap = new HashMap<>();
+        combinedRuleMap.put("commonSqlRuleMap", commonSqlRuleMap());
+        combinedRuleMap.put("ctlRuleMap", ctlRuleMap());
+        combinedRuleMap.put("targetSqlRuleMap", targetSqlRuleMap());
+        return combinedRuleMap;
     }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="s31">
+<typeAlias alias="UserPo"
+type="com.fan.demos.ibatis.data.po.UserPo"/>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select to_char(sysdate, 'YYYYMMDD') from dual;
+	</select>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select to_date('20200805', 'YYYYMMDD') tdate from dual;
+	</select>
+
+</sqlMap>
+

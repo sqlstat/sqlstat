@@ -57,7 +57,7 @@ public class Driver {
         logger.info("queueDepth:{}",queueDepth);
         File baseDirFile = FileUtil.checkBaseDir(baseDir);
 
-        CountDownLatch countDownLatch = new CountDownLatch(workers);
+        CountDownLatch countDownLatch = new CountDownLatch(workers+1);
         ExecutorService executorService = Executors.newFixedThreadPool(workers);
         for(int i=0; i<workers; i++){
             FileStatWorker fileStatWorker = new FileStatWorker(countDownLatch, blockingQueue);

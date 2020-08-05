@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="s31">
+<typeAlias alias="UserPo"
+type="com.fan.demos.ibatis.data.po.UserPo"/>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		SELECT
+
+			id,
+			name
+		FROM
+			user
+		WHERE
+			id = #id#
+	</select>
+
+	<insert id="UserPo-insert" parameterClass="UserPo" >
+		insert into user
+		<dynamic prepend="(">
+			<notNull prepend="," property="id">
+				id
+			</notNull>
+			<notNull  prepend="," property="id">
+				name
+			</notNull>
+			) values
+		</dynamic>
+		<dynamic prepend="(">
+			<notNull prepend="," property="id">
+				#id#
+			</notNull>
+			<notNull  prepend="," property="id">
+				#name#
+			</notNull>
+		</dynamic>
+	</insert>
+
+	<delete id="UserPo-delete" parameterClass="UserPo">
+		delete from user where id=#id#
+	</delete>
+
+	<update id="UserPo-update" parameterClass="UserPo">
+		update
+
+
+		user
+
+
+
+
+		set name=#name# where id=#id#
+	</update>
+
+</sqlMap>

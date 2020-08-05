@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="s31">
+<typeAlias alias="UserPo"
+type="com.fan.demos.ibatis.data.po.UserPo"/>
+
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		select nvl2(null,1,2) from dual;
+	</select>
+
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		[[<![CDATA[
+			select sysdate from dual where rownum <3;
+		]]>
+	</select>
+
+</sqlMap>
+

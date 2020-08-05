@@ -16,8 +16,8 @@ import java.util.Map;
 public class TextOutService implements OutService {
     private static final Logger logger = LoggerFactory.getLogger(TextOutService.class);
 
-    @Resource(name="fileTypeRuleMap")
-    private Map<FileType, Map<Integer, Rule>> fileTypeRuleMap;
+    @Resource(name="combinedRuleMap")
+    Map<String, Map<Integer, Rule>> combinedRuleMap;
 
     @Value("${app.projectStat.showDetails:false}")
     private boolean showDetails;
@@ -34,8 +34,10 @@ public class TextOutService implements OutService {
                     stringBuilder.append("file:")
                             .append(fileTarget.getFile().getAbsolutePath());
                     fileTarget.getSqlHitList().forEach(sqlHit -> {
+                        String ruleMapName = sqlHit.getRuleMapName();
                         int ruleId = sqlHit.getRuleId();
-                        Rule rule = fileTypeRuleMap.get(fileTarget.getFileType()).get(ruleId);
+                        Map<Integer,Rule> ruleMap = combinedRuleMap.get(ruleMapName);
+                        Rule rule = ruleMap.get(ruleId);
                         stringBuilder.append(" [ruleId:").append(ruleId)
                                 .append(" Regex:").append("\"").append(rule.getRegex()).append("\"")
                                 .append(" Suggestion:").append(rule.getSuggrestion())
