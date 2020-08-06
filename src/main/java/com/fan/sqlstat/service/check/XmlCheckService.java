@@ -44,7 +44,6 @@ public class XmlCheckService implements ChechService {
         String projectName = fileTarget.getProject();
         try {
             Document document = reader.read(fileTarget.getFile());
-
             //ibatis
             if(document.getDocType().getElementName().equals("sqlMap") &&
                     document.getDocType().getSystemID().equals("http://www.ibatis.com/dtd/sql-map-2.dtd")){
@@ -70,7 +69,7 @@ public class XmlCheckService implements ChechService {
                             }
                             //no sql parser
                             fileTarget.addSqlItemNum();
-                            logger.info("{} is found, project:{}, file:{}, contain sql {}, sql:{}",
+                            logger.info("{} is found, project:{}, file:{},  sql:{}",
                                     fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget(), sql);
                         }
 
@@ -93,14 +92,13 @@ public class XmlCheckService implements ChechService {
                     }
                 }
             } */
-
             // treat as common file;
             else{
                 fileTarget = commonFileCheckService.check(fileTarget);
             }
-        } catch (DocumentException e) {
-            logger.error(e.getMessage(), e);
-            fileTarget = commonFileCheckService.check(fileTarget);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+//            fileTarget = commonFileCheckService.check(fileTarget);
         }
 
 
@@ -110,11 +108,15 @@ public class XmlCheckService implements ChechService {
     public List<SqlHit> checkSql(String sql){
         List resultList = new ArrayList<>();
         targetSqlRuleMap.forEach((index, rule) ->{
-            String regex = rule.getRegex();
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(sql);
-            if(matcher.find()){
-                resultList.add(new SqlHit("targetSqlRuleMap", index, sql));
+            try{
+                String regex = rule.getRegex();
+                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(sql);
+                if(matcher.find()){
+                    resultList.add(new SqlHit("targetSqlRuleMap", index, sql));
+                }
+            }catch(Throwable e){
+                logger.error(e.getMessage(), e);
             }
         });
         return resultList;

@@ -1,6 +1,5 @@
 package com.fan.sqlstat;
 
-import com.fan.sqlstat.constant.FileType;
 import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.util.RuleUtil;
 import com.fan.sqlstat.util.SpringContext;

@@ -27,4 +27,26 @@ public class RegexTest {
         Matcher matcher = pattern.matcher(sql);
         System.out.println("regex match? "+matcher.find());
     }
+
+    @Test
+    public void test03(){
+        String sql = "select to_char    \n" +
+                "(sysdate, '%Y%m%d') from dual";
+        System.out.println(sql);
+        String regex = "select\\s+?\\S+?\\s+?(?:\\S+?\\s+?)*?from";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
+
+    @Test
+    public void test04(){
+        String sql = "select to_char\n" +
+                "(sysdate, '%Y%m%d')\nfrom dual where rowNum < 10";
+        System.out.println(sql);
+        String regex = "rownum";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
 }

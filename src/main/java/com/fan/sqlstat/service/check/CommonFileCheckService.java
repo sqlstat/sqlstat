@@ -91,17 +91,21 @@ public class CommonFileCheckService implements ChechService {
         Map<Integer, Rule> ruleMap = fileTypeRuleMap.get(fileType);
         String ruleName = fileTypeRuleNameMap.get(fileType);
         ruleMap.forEach((index, rule) ->{
-            String regex = rule.getRegex();
-            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(text);
-            if(matcher.find()){
-                String originalSql;
-                if(isSql){
-                    originalSql = text;
-                }else{
-                    originalSql = null;
+            try{
+                String regex = rule.getRegex();
+                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(text);
+                if(matcher.find()){
+                    String originalSql;
+                    if(isSql){
+                        originalSql = text;
+                    }else{
+                        originalSql = null;
+                    }
+                    resultList.add(new SqlHit(ruleName, index, originalSql));
                 }
-                resultList.add(new SqlHit(ruleName, index, originalSql));
+            }catch(Throwable e){
+                logger.error(e.getMessage(), e);
             }
         });
         return resultList;
