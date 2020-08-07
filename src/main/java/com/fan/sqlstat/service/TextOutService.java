@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.Map;
 
 @Component
-public class TextOutService implements OutService {
+public class TextOutService extends AbstractOutService implements OutService {
     private static final Logger logger = LoggerFactory.getLogger(TextOutService.class);
 
     @Resource(name="combinedRuleMap")
@@ -23,17 +23,16 @@ public class TextOutService implements OutService {
     private boolean showDetails;
 
     @Override
-    public void printResult(ResultSet resultSet) {
+    public void outputAction(ResultSet resultSet) {
         Map<String, ProjectStat> resultMap = resultSet.getResultMap();
         logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++");
         resultMap.forEach((key, projectStat) -> {
             logger.info("{}", projectStat.toString());
             if(showDetails){
                 projectStat.fileTargetList.forEach(fileTarget -> {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("file:")
-                            .append(fileTarget.getFile().getAbsolutePath());
+                    logger.info("{}", "file:"+fileTarget.getFile().getAbsolutePath());
                     fileTarget.getSqlHitList().forEach(sqlHit -> {
+                        StringBuilder stringBuilder = new StringBuilder();
                         String ruleMapName = sqlHit.getRuleMapName();
                         int ruleId = sqlHit.getRuleId();
                         Map<Integer,Rule> ruleMap = combinedRuleMap.get(ruleMapName);
@@ -41,12 +40,10 @@ public class TextOutService implements OutService {
                         stringBuilder.append(" [ruleId:").append(ruleId)
                                 .append(" Regex:").append("\"").append(rule.getRegex()).append("\"")
                                 .append(" Suggestion:").append(rule.getSuggrestion())
-                                .append(" originalSql:").append(sqlHit.getOriginalSql())
+                                .append(" originalSql:").append(sqlHit.getOriginalSql() == null ? null : sqlHit.getOriginalSql().trim())
                                 .append("]");
+                        logger.info("{}", stringBuilder.toString());
                     });
-
-
-                    logger.info("\t{}", stringBuilder.toString());
                 });
             }
         });

@@ -27,10 +27,4 @@ echo -e " dda \n dbms_metadata.put \n adfe" > $TESTDIR/p3/src/4.sql
 echo -e " dda \ndbms_output.put \n adfe" > $TESTDIR/p3/src/5.sql
 echo -e "delete update" > $TESTDIR/p3/src/6.qry
 
-cp ibatisTestFile/UserPo.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo1.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo2.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo3.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo4.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo5.xml  $TESTDIR/p4/src/
-cp ibatisTestFile/UserPo6.xml  $TESTDIR/p4/src/
+cp ibatisTestFile/*.xml  $TESTDIR/p4/src/

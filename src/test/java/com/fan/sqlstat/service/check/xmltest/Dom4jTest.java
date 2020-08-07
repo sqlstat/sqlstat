@@ -3,13 +3,15 @@ package com.fan.sqlstat.service.check.xmltest;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
+import org.dom4j.tree.DefaultEntity;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public class Dom4jTest {
 
@@ -28,23 +30,34 @@ public class Dom4jTest {
                 Iterator it = xmlroot.elementIterator();
                 int sqlNum=0;
                 while (it.hasNext()) {
-                    Element element = (Element) it.next();
+                    DefaultElement element = (DefaultElement) it.next();
                     if(element.getName().equals("select") || element.getName().equals("insert")
                             || element.getName().equals("update") || element.getName().equals("delete")){
-                        String sql = element.getStringValue();
-                        System.out.println("sql found:"+sql);
-                        String regex = "select\\s+(\\S\\s*){1,}from";
-                        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-                        Matcher matcher = pattern.matcher(sql);
-                        System.out.println("regex match? "+matcher.find());
                         sqlNum++;
+                        System.out.println("element:"+element.toString());
+                        System.out.println("test:"+element.getText());
+                        System.out.println("data:"+element.getData());
+                        System.out.println("nodes:"+element.content());
+                        System.out.println("asXml:"+element.asXML());
+                        System.out.println("stringValue:"+element.getStringValue());
+
+                        List<Node> list = element.content();
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for(Node node : list){
+                            stringBuilder.append(node.asXML());
+                        }
+                        System.out.println("contents asXml:"+stringBuilder.toString());
+
+                        element.clearContent();
+                        String resultStr = stringBuilder.toString().replaceAll("decode\\s*?\\(", "newFunc(");
+                        DefaultEntity entity = new DefaultEntity("tmp", resultStr);
+                        element.add(entity);
                     }
                 }
                 System.out.println("sqlNum:"+sqlNum);
+                System.out.println("newDoc:"+document.asXML());
             }
-
-
-
         } catch (DocumentException e) {
             e.printStackTrace();
         }

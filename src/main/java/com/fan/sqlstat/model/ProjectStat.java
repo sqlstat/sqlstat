@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ProjectStat {
-
     public String projectName;
     public int java;
     public int javaSqlNum;

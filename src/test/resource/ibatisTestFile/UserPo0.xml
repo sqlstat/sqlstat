@@ -6,9 +6,19 @@ PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
 <typeAlias alias="UserPo"
 type="com.fan.demos.ibatis.data.po.UserPo"/>
 
+	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
+		SELECT
+
+			id,
+			name
+		FROM
+			user
+		WHERE
+			id = #id#
+	</select>
+
 	<insert id="UserPo-insert" parameterClass="UserPo" >
-		insert into
-		user
+		insert into user
 		<dynamic prepend="(">
 			<notNull prepend="," property="id">
 				id
@@ -23,9 +33,25 @@ type="com.fan.demos.ibatis.data.po.UserPo"/>
 				#id#
 			</notNull>
 			<notNull  prepend="," property="id">
-				decode(#name#,null,"default",#name#)
+				#name#
 			</notNull>
 		</dynamic>
 	</insert>
+
+	<delete id="UserPo-delete" parameterClass="UserPo">
+		delete from user where id=#id#
+	</delete>
+
+	<update id="UserPo-update" parameterClass="UserPo">
+		update
+
+
+		user
+
+
+
+
+		set name=#name# where id=#id#
+	</update>
 
 </sqlMap>

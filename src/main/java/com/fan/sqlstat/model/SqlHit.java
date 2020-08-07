@@ -1,7 +1,6 @@
 package com.fan.sqlstat.model;
 
 public class SqlHit {
-
     private String ruleMapName;
     private int ruleId;
     private String originalSql;

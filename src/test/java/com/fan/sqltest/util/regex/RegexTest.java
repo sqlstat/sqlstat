@@ -49,4 +49,45 @@ public class RegexTest {
         Matcher matcher = pattern.matcher(sql);
         System.out.println("regex match? "+matcher.find());
     }
+
+
+    @Test
+    public void test05(){
+        String sql = "\t\tSELECT ID,NAME,ROW_NUMBER\n()\n" +
+                "\t\t\tOVER(partition by ID order by name desc) as RN FROM test;";
+        System.out.println(sql);
+        String regex = "row_number\\s*?\\(.*?\\)\\s+?over";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
+
+    @Test
+    public void test06(){
+        String sql = "SELECT id, name, max\t\n(id\t)\t over(partition by name order by  name) as maxId from test";
+        System.out.println(sql);
+        String regex = "max\\s*?\\(.*?\\)\\s+?over";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
+
+    @Test
+    public void test07(){
+        String sql = "SELECT id, listagg (name, \t',') WITHIN GROUP (ORDER BY name) names FROM test t GROUP BY id";
+        System.out.println(sql);
+        String regex = "listagg\\s*?\\(.*?\\)\\s+?WITHIN\\s+?GROUP";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
+
+
+    @Test
+    public void test08(){
+        String sql = "SELECT id, \nlistagg (name, \t',') \nWITHIN GROUP (ORDER BY name) names FROM test t GROUP BY id";
+        System.out.println(sql.replace("\n"," "));
+
+    }
+
 }

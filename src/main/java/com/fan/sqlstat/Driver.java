@@ -73,7 +73,7 @@ public class Driver {
         addPoison();
         countDownLatch.await();
         agggregateResult(resultSet);
-        outService.printResult(resultSet);
+        outService.output(resultSet);
         executorService.shutdown();
     }
 

@@ -5,8 +5,8 @@ import com.fan.sqlstat.model.FileTarget;
 import com.fan.sqlstat.model.Rule;
 import com.fan.sqlstat.model.SqlHit;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,13 @@ public class XmlCheckService implements ChechService {
                     Element element = (Element) it.next();
                     if(element.getName().equals("select") || element.getName().equals("insert")
                             || element.getName().equals("update") || element.getName().equals("delete")){
-                        String sql = element.getStringValue().trim();
+
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for(Node node : element.content()){
+                            stringBuilder.append(node.asXML());
+                        }
+//                        String sql = element.getStringValue().trim();
+                        String sql = stringBuilder.toString();
                         logger.trace("ibatis sql found:" + sql);
 //                        List<SqlHit> sqlHitList = commonFileCheckService.checkText(sql, fileType, true);
                         List<SqlHit> sqlHitList = checkSql(sql);
@@ -72,7 +78,6 @@ public class XmlCheckService implements ChechService {
                             logger.info("{} is found, project:{}, file:{},  sql:{}",
                                     fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget(), sql);
                         }
-
                     }
                 }
             }
@@ -100,8 +105,6 @@ public class XmlCheckService implements ChechService {
             logger.error(e.getMessage());
 //            fileTarget = commonFileCheckService.check(fileTarget);
         }
-
-
         return fileTarget;
     }
 

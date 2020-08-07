@@ -1,20 +1,10 @@
 package com.fan.sqlstat.util;
 
-import com.fan.sqlstat.constant.FileType;
-import com.fan.sqlstat.model.FileTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.nio.channels.FileChannel;
 
 public class FileUtil {
     private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
@@ -48,5 +38,19 @@ public class FileUtil {
             logger.error(e.getMessage(), e);
         }
         return sb.toString();
+    }
+
+    public static void copy(File source, File target)  {
+        File parent = target.getParentFile();
+        if(!parent.exists()){
+            parent.mkdirs();
+        }
+        try {
+            FileChannel in = new FileInputStream(source).getChannel();
+            FileChannel out = new FileOutputStream(target).getChannel();
+            out.transferFrom(in, 0, in.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
