@@ -35,6 +35,9 @@ public class Driver {
     @Value("${app.queue.depth:300}")
     private int queueDepth;
 
+    @Value("${app.baseDir.isProject:false}")
+    private boolean baseDirIsProject;
+
     @Resource
     private ScanFileFilter scanFileFilter;
 
@@ -68,6 +71,7 @@ public class Driver {
         FileScanWorker fileScanWorker = new FileScanWorker(countDownLatch, blockingQueue);
         fileScanWorker.setScanFileFilter(scanFileFilter);
         fileScanWorker.setBaseDirFile(baseDirFile);
+        fileScanWorker.setBaseDirIsProject(baseDirIsProject);
         fileScanWorker.run();
 
         addPoison();

@@ -18,6 +18,7 @@ public class FileScanWorker implements Runnable {
 
     private File baseDirFile;
     private ScanFileFilter scanFileFilter;
+    private boolean baseDirIsProject;
 
     private String sourceDir;
 
@@ -28,18 +29,29 @@ public class FileScanWorker implements Runnable {
 
     @Override
     public void run() {
-        File[] files = baseDirFile.listFiles();
-        for(File projectDir : files){
-            if(projectDir.isDirectory()){
-                String projectName = projectDir.getName();
-                logger.info("projectName {}", projectName);
-                try {
-                    dirRecursion(projectDir, projectName);
-                } catch (InterruptedException e) {
-                    logger.error(e.getMessage(), e);
+        if(baseDirIsProject == true){
+            String projectName = baseDirFile.getName();
+            logger.info("projectName {}", projectName);
+            try {
+                dirRecursion(baseDirFile, projectName);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }else{
+            File[] files = baseDirFile.listFiles();
+            for(File projectDir : files){
+                if(projectDir.isDirectory()){
+                    String projectName = projectDir.getName();
+                    logger.info("projectName {}", projectName);
+                    try {
+                        dirRecursion(projectDir, projectName);
+                    } catch (InterruptedException e) {
+                        logger.error(e.getMessage(), e);
+                    }
                 }
             }
         }
+
         countDownLatch.countDown();
     }
 
@@ -76,5 +88,9 @@ public class FileScanWorker implements Runnable {
 
     public void setBaseDirFile(File baseDirFile) {
         this.baseDirFile = baseDirFile;
+    }
+
+    public void setBaseDirIsProject(boolean baseDirIsProject) {
+        this.baseDirIsProject = baseDirIsProject;
     }
 }
