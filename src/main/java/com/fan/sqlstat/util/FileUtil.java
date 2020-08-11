@@ -45,9 +45,8 @@ public class FileUtil {
         if(!parent.exists()){
             parent.mkdirs();
         }
-        try {
-            FileChannel in = new FileInputStream(source).getChannel();
-            FileChannel out = new FileOutputStream(target).getChannel();
+        try(FileChannel in = new FileInputStream(source).getChannel();
+            FileChannel out = new FileOutputStream(target).getChannel();) {
             out.transferFrom(in, 0, in.size());
         } catch (IOException e) {
             e.printStackTrace();

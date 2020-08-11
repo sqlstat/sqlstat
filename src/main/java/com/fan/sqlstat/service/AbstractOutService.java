@@ -34,13 +34,30 @@ public abstract class AbstractOutService implements OutService{
         dateDirFile.mkdirs();
 
         Map<String, ProjectStat> resultMap = resultSet.getResultMap();
+        boolean isWindows = isWindows();
         resultMap.forEach((key, projectStat) -> {
             projectStat.fileTargetList.forEach(fileTarget -> {
-                File source = fileTarget.getFile();
-                File target = new File(dateDir+source.getAbsolutePath());
-                FileUtil.copy(source, target);
+                try {
+                    File source = fileTarget.getFile();
+                    String filePath;
+                    //windows cut C：/ for example
+                    if(isWindows){
+                        filePath = source.getCanonicalPath().split(":", 1)[1];
+                    }else{
+                        filePath = source.getCanonicalPath();
+                    }
+                    File target = new File(dateDir+filePath);
+                    FileUtil.copy(source, target);
+                } catch (Exception e) {
+                   logger.error(e.getMessage(), e);
+                }
             });
         });
         outputAction(resultSet);
     }
+
+    private boolean isWindows() {
+        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+    }
+
 }

@@ -20,4 +20,9 @@ public class FileUtilTest {
         System.out.println(file.getName());
         System.out.println(file.getPath());
     }
+
+    @Test
+    public void test03(){
+        System.out.println(System.getProperties().getProperty("os.name"));
+    }
 }
