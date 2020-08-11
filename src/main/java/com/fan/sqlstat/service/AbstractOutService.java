@@ -19,11 +19,22 @@ public abstract class AbstractOutService implements OutService{
     @Value("${app.result.dir}")
     private String resultDir;
 
+    private String dateDir;
+
     @Override
     public void output(ResultSet resultSet) {
+        copyTargetFile(resultSet);
+        outputAction(resultSet);
+    }
+
+
+    private boolean isWindows() {
+        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+    }
+
+    private void copyTargetFile(ResultSet resultSet){
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String dateStr = dateFormat.format(new Date());
-        String dateDir;
         if(!resultDir.endsWith(File.separator)){
             dateDir = resultDir+File.separator+dateStr+File.separator;
         }else{
@@ -42,22 +53,21 @@ public abstract class AbstractOutService implements OutService{
                     String filePath;
                     //windows cut C：/ for example
                     if(isWindows){
-                        filePath = source.getCanonicalPath().split(":", 1)[1];
+                        logger.info("path:{}", source.getCanonicalPath());
+                        filePath = source.getCanonicalPath().split(":", 2)[1];
                     }else{
                         filePath = source.getCanonicalPath();
                     }
                     File target = new File(dateDir+filePath);
                     FileUtil.copy(source, target);
                 } catch (Exception e) {
-                   logger.error(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 }
             });
         });
-        outputAction(resultSet);
     }
 
-    private boolean isWindows() {
-        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+    protected String getDateDir() {
+        return dateDir;
     }
-
 }

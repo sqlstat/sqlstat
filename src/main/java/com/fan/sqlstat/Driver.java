@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class Driver {
 
     @Value("${app.baseDir}")
     private String baseDir;
+
+    @Value("${app.basedir.excludeDir:null}")
+    private String excludeDir;
 
     @Value("${app.queue.depth:300}")
     private int queueDepth;
@@ -48,10 +52,15 @@ public class Driver {
     private OutService outService;
 
     private BlockingQueue<FileTarget> blockingQueue;
+    private List<String> excludeDirList;
 
     @PostConstruct
     private void init(){
         blockingQueue = new LinkedBlockingQueue<>(queueDepth);
+        if(excludeDir!=null && !excludeDir.equals("null")){
+            excludeDirList = Arrays.asList(excludeDir.split(";"));
+            logger.info("excludeDirList:{}", excludeDirList);
+        }
     }
 
     public void launch() throws InterruptedException {
@@ -72,6 +81,7 @@ public class Driver {
         fileScanWorker.setScanFileFilter(scanFileFilter);
         fileScanWorker.setBaseDirFile(baseDirFile);
         fileScanWorker.setBaseDirIsProject(baseDirIsProject);
+        fileScanWorker.setExcludeDirList(excludeDirList);
         fileScanWorker.run();
 
         addPoison();

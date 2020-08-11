@@ -25,4 +25,13 @@ public class FileUtilTest {
     public void test03(){
         System.out.println(System.getProperties().getProperty("os.name"));
     }
+
+    @Test
+    public void test04(){
+        String fileName = "D:/a/dd/aa";
+        String[] strArr = fileName.split(":", 2);
+        for(String str: strArr){
+            System.out.println(str);
+        }
+    }
 }

@@ -6,6 +6,10 @@ mkdir -p $TESTDIR/p1/src
 mkdir -p $TESTDIR/p2/src
 mkdir -p $TESTDIR/p3/src
 mkdir -p $TESTDIR/p4/src
+mkdir -p $TESTDIR/p1/target
+mkdir -p $TESTDIR/p2/target
+mkdir -p $TESTDIR/p3/target
+mkdir -p $TESTDIR/p4/target
 echo -e "select \n * \n From test" > $TESTDIR/p1/src/1.sh
 echo -e "update test \n set name='fan'\n" > $TESTDIR/p1/src/2.sh
 echo -e "delete from test where name='fan'\n" > $TESTDIR/p1/src/3.sh

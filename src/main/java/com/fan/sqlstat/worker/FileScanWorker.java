@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 
@@ -19,8 +22,8 @@ public class FileScanWorker implements Runnable {
     private File baseDirFile;
     private ScanFileFilter scanFileFilter;
     private boolean baseDirIsProject;
-
-    private String sourceDir;
+    private List<String> excludeDirList;
+    private List<String> excludeDirNameList;
 
     public FileScanWorker(CountDownLatch countDownLatch, BlockingQueue<FileTarget> blockingQueue){
         this.countDownLatch = countDownLatch;
@@ -29,6 +32,7 @@ public class FileScanWorker implements Runnable {
 
     @Override
     public void run() {
+        initExcludeDirs();
         if(baseDirIsProject == true){
             String projectName = baseDirFile.getName();
             logger.info("projectName {}", projectName);
@@ -60,7 +64,10 @@ public class FileScanWorker implements Runnable {
             logger.error("input dir is not dir, {}", baseDir.getAbsolutePath());
             return;
         }
-
+        if(isExcludeFile(baseDir)){
+            logger.info("dir is excluded:{}", baseDir);
+            return;
+        }
         File[] files = baseDir.listFiles(scanFileFilter);
         for(File file : files){
             if(file.isDirectory()){
@@ -68,7 +75,6 @@ public class FileScanWorker implements Runnable {
                 dirRecursion(file, projectName);
             }else{
                 String filename = file.getName();
-
                 for(String ext: scanFileFilter.getFileExtentions()){
                     if(filename.endsWith(ext)||filename.endsWith(ext.toUpperCase())){
                         FileType fileType = FileType.getFileTypeByExt(ext);
@@ -82,6 +88,35 @@ public class FileScanWorker implements Runnable {
         }
     }
 
+    private void initExcludeDirs(){
+        if(excludeDirList!=null){
+            excludeDirNameList = new ArrayList<>();
+            try {
+                String baseDirStr = baseDirFile.getCanonicalPath();
+                for(String excludeDirStr : excludeDirList){
+                    excludeDirNameList.add(baseDirStr+File.separator+excludeDirStr);
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+            logger.debug("excludeFileList:{}", excludeDirNameList);
+        }
+    }
+
+    private boolean isExcludeFile(File file) {
+        if(excludeDirNameList == null){
+            return false;
+        }
+        try {
+            if(excludeDirNameList.contains(file.getCanonicalPath())){
+                return true;
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return false;
+    }
+
     public void setScanFileFilter(ScanFileFilter scanFileFilter){
         this.scanFileFilter = scanFileFilter;
     }
@@ -92,5 +127,9 @@ public class FileScanWorker implements Runnable {
 
     public void setBaseDirIsProject(boolean baseDirIsProject) {
         this.baseDirIsProject = baseDirIsProject;
+    }
+
+    public void setExcludeDirList(List<String> excludeDirList) {
+        this.excludeDirList = excludeDirList;
     }
 }

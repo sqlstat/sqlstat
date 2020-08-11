@@ -98,11 +98,11 @@ public class XmlCheckService implements ChechService {
                 }
             } */
             // treat as common file;
-            else{
-                fileTarget = commonFileCheckService.check(fileTarget);
-            }
+//            else{
+//                fileTarget = commonFileCheckService.check(fileTarget);
+//            }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+//            logger.error(e.getMessage());
 //            fileTarget = commonFileCheckService.check(fileTarget);
         }
         return fileTarget;
