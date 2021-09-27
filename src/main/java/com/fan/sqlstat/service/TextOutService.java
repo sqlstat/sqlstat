@@ -98,7 +98,15 @@ public class TextOutService extends AbstractOutService implements OutService {
                         row.createCell(cellNum++).setCellValue(ruleId);
                         row.createCell(cellNum++).setCellValue(rule.getRegex());
                         row.createCell(cellNum++).setCellValue(rule.getSuggrestion());
-                        row.createCell(cellNum++).setCellValue(sqlHit.getOriginalSql() == null ? null : sqlHit.getOriginalSql().trim());
+                        String originalSql = sqlHit.getOriginalSql();
+                        if(originalSql != null){
+                            originalSql = originalSql.trim();
+                            if(originalSql.length() >=32767){
+                                originalSql = originalSql.substring(0, 32767);
+                            }
+                        }
+//                        row.createCell(cellNum++).setCellValue(sqlHit.getOriginalSql() == null ? null : sqlHit.getOriginalSql().trim());
+                        row.createCell(cellNum++).setCellValue(originalSql);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
