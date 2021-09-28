@@ -11,9 +11,9 @@ mkdir -p $TESTDIR/p2/target
 mkdir -p $TESTDIR/p3/target
 mkdir -p $TESTDIR/p4/target
 echo -e "select \n * \n From test" > $TESTDIR/p1/src/1.sh
-echo -e "update test \n set name='fan'\n" > $TESTDIR/p1/src/2.sh
-echo -e "delete from test where name='fan'\n" > $TESTDIR/p1/src/3.sh
-echo -e "insert into test values('fan')\n" > $TESTDIR/p1/src/4.sh
+echo -e "update test \n set name='gk'\n" > $TESTDIR/p1/src/2.sh
+echo -e "delete from test where name='gk'\n" > $TESTDIR/p1/src/3.sh
+echo -e "insert into test values('gk')\n" > $TESTDIR/p1/src/4.sh
 echo -e "sqlldr asdf  asdfeed" > $TESTDIR/p1/src/5.sh
 echo -e "select update" > $TESTDIR/p1/src/6.sh
 

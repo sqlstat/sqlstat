@@ -4,7 +4,7 @@ PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
 "http://www.ibatis.com/dtd/sql-map-2.dtd">
 <sqlMap namespace="s31">
 <typeAlias alias="UserPo"
-type="com.fan.demos.ibatis.data.po.UserPo"/>
+type="com.gk.demos.ibatis.data.po.UserPo"/>
 
 	<select id="UserPo-getByPK" parameterClass="UserPo" resultClass="UserPo">
 		select trunc(sysdate) from dual;
