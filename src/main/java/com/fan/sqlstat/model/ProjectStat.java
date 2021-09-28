@@ -18,6 +18,8 @@ public class ProjectStat {
     public int ctl;
     public int others;
     public int othersSqlNum;
+    public int sqlMapSqlCnt; // sqlMap(ibatis) sql统计
+    public int mapperSqlCnt; // mapper(mybatis) sql 统计
 
     public List<FileTarget> fileTargetList = new LinkedList<>();
 
