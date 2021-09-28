@@ -1,6 +1,7 @@
 # sqlstat
 
 change log
+repo cheange to gitee~ 
 v1.0.1
 1.增加ibatis xml解析类，匹配sql数量
 
