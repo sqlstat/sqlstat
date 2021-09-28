@@ -64,7 +64,7 @@ public class TextOutService extends AbstractOutService implements OutService {
     private void outputExcel(ResultSet resultSet){
         List<String> header = Arrays.asList("file", "ruleId", "regex", "Suggestion", "originalSql");
         Workbook workbook = new SXSSFWorkbook();
-        Sheet sheet = workbook.createSheet();
+        Sheet sheet = workbook.createSheet("sql hit details");
         sheet.setDefaultRowHeight((short) 400);
         // 构建头单元格样式
         CellStyle cellStyle = buildHeadCellStyle(sheet.getWorkbook());
@@ -113,6 +113,37 @@ public class TextOutService extends AbstractOutService implements OutService {
                 }
             }
         }
+
+        // sheet2 增加统计信息
+        Sheet statisticSheet = workbook.createSheet("sql hit statistics");
+        statisticSheet.setDefaultRowHeight((short) 400);
+        List<String> statisticHeader = Arrays.asList("项目名称 project_name", "xml文件命中总数", "ibatis-xml配置文件中命中sql总数",
+                "mybatis-mapper配置文件命中sql总数", "java文件命中总数", "java文件中命中sql总数", "sql文件命中总数", "sql文件中sql命中总数",
+                "shell文件命中总数", "shell文件中sql命中总数");
+        int statisticRrowNum = 0;
+        Row statisticHead = statisticSheet.createRow(statisticRrowNum++);
+        for (int i = 0; i < statisticHeader.size(); i++) {
+            Cell cell = statisticHead.createCell(i);
+            cell.setCellValue(statisticHeader.get(i));
+            statisticSheet.setColumnWidth(i, 8000);
+            cell.setCellStyle(cellStyle);
+        }
+        for (String projectName : projectNameSet) {
+            ProjectStat projectStat = resultMap.get(projectName);
+            Row statisticRow = statisticSheet.createRow(statisticRrowNum++);
+            int cellNum = 0;
+            statisticRow.createCell(cellNum++).setCellValue(projectName);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.xml);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.sqlMapSqlCnt);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.mapperSqlCnt);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.java);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.javaSqlNum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.sql);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.sqlSqlNum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.shell);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.shellSqlNum);
+        }
+
 
         FileOutputStream fileOut = null;
         try {

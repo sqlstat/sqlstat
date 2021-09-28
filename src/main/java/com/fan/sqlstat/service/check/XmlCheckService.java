@@ -45,9 +45,9 @@ public class XmlCheckService implements ChechService {
         try {
             Document document = reader.read(fileTarget.getFile());
             //ibatis
-            if(document.getDocType().getElementName().equals("sqlMap") &&
-                    document.getDocType().getSystemID().equals("http://www.ibatis.com/dtd/sql-map-2.dtd")){
-                logger.trace("ibatis mapping file found:"+document.getName());
+            if(document.getDocType().getElementName().equals("sqlMap")
+                || document.getDocType().getElementName().equals("mapper")){
+                logger.trace("ibatis/mybatis mapping file found:"+document.getName());
                 Element xmlroot = document.getRootElement();
                 Iterator it = xmlroot.elementIterator();
                 while (it.hasNext()) {
@@ -61,7 +61,7 @@ public class XmlCheckService implements ChechService {
                         }
 //                        String sql = element.getStringValue().trim();
                         String sql = stringBuilder.toString();
-                        logger.trace("ibatis sql found:" + sql);
+                        logger.trace("ibatis/mybatis sql found:" + sql);
 //                        List<SqlHit> sqlHitList = commonFileCheckService.checkText(sql, fileType, true);
                         List<SqlHit> sqlHitList = checkSql(sql);
                         if(!sqlHitList.isEmpty()){
@@ -72,6 +72,11 @@ public class XmlCheckService implements ChechService {
                                 fileTarget.setSqlHitList(addList);
                             }else{
                                 addList.addAll(sqlHitList);
+                            }
+                            if (document.getDocType().getElementName().equals("sqlMap")) {
+                                fileTarget.setSqlMapSqlCnt(fileTarget.getSqlMapSqlCnt() + 1);
+                            } else if (document.getDocType().getElementName().equals("mapper")) {
+                                fileTarget.setMapperSqlCnt(fileTarget.getMapperSqlCnt() + 1);
                             }
                             //no sql parser
                             fileTarget.addSqlItemNum();

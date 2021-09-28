@@ -67,7 +67,10 @@ public class FileStatWorker implements Runnable {
                             break;
                         case XML:
                             projectStat.xml += 1;
-                            projectStat.xmlSqlNum += fileTarget.getSqlItemNum();break;
+                            projectStat.xmlSqlNum += fileTarget.getSqlItemNum();
+                            projectStat.sqlMapSqlCnt += fileTarget.getSqlMapSqlCnt();
+                            projectStat.mapperSqlCnt += fileTarget.getMapperSqlCnt();
+                            break;
                         case SHELL:
                             projectStat.shell += 1;
                             projectStat.shellSqlNum += fileTarget.getSqlItemNum();

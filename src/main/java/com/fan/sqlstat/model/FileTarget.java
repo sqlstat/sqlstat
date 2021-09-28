@@ -19,10 +19,32 @@ public class FileTarget {
     //sql num;
     private int sqlItemNum;
 
+    // sqlMap(ibatis) sql cnt
+    private int sqlMapSqlCnt;
+
+    // mapper(mybatis) sql cnt
+    private int mapperSqlCnt;
+
     public FileTarget(String project, File file, FileType fileType){
         this.project = project;
         this.file = file;
         this.fileType = fileType;
+    }
+
+    public int getSqlMapSqlCnt() {
+        return sqlMapSqlCnt;
+    }
+
+    public void setSqlMapSqlCnt(int sqlMapSqlCnt) {
+        this.sqlMapSqlCnt = sqlMapSqlCnt;
+    }
+
+    public int getMapperSqlCnt() {
+        return mapperSqlCnt;
+    }
+
+    public void setMapperSqlCnt(int mapperSqlCnt) {
+        this.mapperSqlCnt = mapperSqlCnt;
     }
 
     public File getFile() {
