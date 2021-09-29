@@ -49,6 +49,7 @@ public class XmlCheckService implements ChechService {
             if(document.getDocType().getElementName().equals("sqlMap")
                 || document.getDocType().getElementName().equals("mapper")){
                 logger.trace("ibatis/mybatis mapping file found:"+document.getName());
+                fileTarget.setSqlMapOrMapper(true);
                 Element xmlroot = document.getRootElement();
                 Iterator it = xmlroot.elementIterator();
                 while (it.hasNext()) {

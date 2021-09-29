@@ -1,8 +1,14 @@
 package com.gk.sqlstat.model;
 
+import lombok.Data;
+import lombok.ToString;
+
+import javax.annotation.sql.DataSourceDefinition;
 import java.util.LinkedList;
 import java.util.List;
 
+@Data
+@ToString(exclude = {"fileTargetList"})
 public class ProjectStat {
     public String projectName;
     public int java;
@@ -18,34 +24,16 @@ public class ProjectStat {
     public int ctl;
     public int others;
     public int othersSqlNum;
-    public int sqlMapSqlHitNum; // sqlMap(ibatis) sql统计
-    public int mapperSqlHitNum; // mapper(mybatis) sql 统计
+    public int sqlMapSqlHitNum; // sqlMap(ibatis) sql 命中数统计
+    public int mapperSqlHitNum; // mapper(mybatis) sql 命中数统计
     public int xmlSqlSum; // xml中sql总数
+    public int javaFileTotalCnt; // java文件数统计
+    public int sqlFileTotalCnt; // sql文件数统计
+    public int xmlFileTotalCnt; //xml文件数统计
+    public int shellFileTotalCnt; // shell文件数统计
+
 
     public List<FileTarget> fileTargetList = new LinkedList<>();
-
-    @Override
-    public String toString() {
-        return "ProjectStat{" +
-                "projectName='" + projectName + '\'' +
-                ", java=" + java +
-                ", javaSqlNum=" + javaSqlHitNum +
-                ", c=" + c +
-                ", cSqlNum=" + cSqlNum +
-                ", xml=" + xml +
-                ", xmlSqlNum=" + xmlSqlHitNum +
-                ", shell=" + shell +
-                ", shellSqlNum=" + shellSqlHitNum +
-                ", sql=" + sql +
-                ", sqlSqlNum=" + sqlSqlNum +
-                ", ctl=" + ctl +
-                ", others=" + others +
-                ", othersSqlNum=" + othersSqlNum +
-                ", sqlMapSqlCnt=" + sqlMapSqlHitNum +
-                ", mapperSqlCnt=" + mapperSqlHitNum +
-                ", xmlSqlSumCnt=" + xmlSqlSum +
-                '}';
-    }
 
 
 }

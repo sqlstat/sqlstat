@@ -61,6 +61,7 @@ public class FileStatWorker implements Runnable {
                             projectStat.java += 1;
                             projectStat.javaSqlHitNum += fileTarget.getSqlItemNum();
                         }
+                        projectStat.javaFileTotalCnt += 1;
                         break;
                     case C:
                         if (fileTarget.isTarget()) {
@@ -76,18 +77,21 @@ public class FileStatWorker implements Runnable {
                             projectStat.mapperSqlHitNum += fileTarget.getMapperSqlHitCnt();
                         }
                         projectStat.xmlSqlSum += fileTarget.getXmlSqlCnt();
+                        projectStat.xmlFileTotalCnt += fileTarget.isSqlMapOrMapper()?1:0;
                         break;
                     case SHELL:
                         if (fileTarget.isTarget()) {
                             projectStat.shell += 1;
                             projectStat.shellSqlHitNum += fileTarget.getSqlItemNum();
                         }
+                        projectStat.shellFileTotalCnt += 1;
                         break;
                     case SQL:
                         if (fileTarget.isTarget()) {
                             projectStat.sql += 1;
                             projectStat.sqlSqlNum += fileTarget.getSqlItemNum();
                         }
+                        projectStat.sqlFileTotalCnt += 1;
                         break;
                     case CTL:
                         if (fileTarget.isTarget()) {

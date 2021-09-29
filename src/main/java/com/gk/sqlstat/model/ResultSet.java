@@ -1,13 +1,16 @@
 package com.gk.sqlstat.model;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@Data
 public class ResultSet {
     private Map<String, ProjectStat> resultMap;
     private List<Map<String, ProjectStat>> threadResultList = Collections.synchronizedList(new ArrayList());
+    private String baseDirName;
 
     public Map<String, ProjectStat> getResultMap() {
         return resultMap;

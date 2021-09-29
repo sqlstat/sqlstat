@@ -1,10 +1,12 @@
 package com.gk.sqlstat.model;
 
 import com.gk.sqlstat.constant.FileType;
+import lombok.Data;
 
 import java.io.File;
 import java.util.List;
 
+@Data
 public class FileTarget {
     private String project;
     private File file;
@@ -23,6 +25,18 @@ public class FileTarget {
     private int sqlMapSqlHitCnt; // sqlMap(ibatis) sql hit cnt
     private int mapperSqlHitCnt; // mapper(mybatis) sql hit cnt
     private int xmlSqlCnt; // xml 中sql 总数
+    private int xmlFileCnt; // xml 文件总数统计
+    private boolean isSqlMapOrMapper; // 是否时sqlMap或者mapper类型的xml文件
+
+    // java类型文件统计
+    private int javaFileCnt; // java文件总数统计
+
+    // shell类型文件统计
+    private int shellFileCnt; // shell文件总数统计
+
+    // sql类型文件统计
+    private int sqlFileCnt; // sql文件总数统计
+
 
     public FileTarget(String project, File file, FileType fileType){
         this.project = project;
