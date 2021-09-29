@@ -1,6 +1,5 @@
 package com.gk.sqlstat;
 
-import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.model.ProjectStat;
 import com.gk.sqlstat.model.ResultSet;
@@ -88,6 +87,7 @@ public class Driver {
         countDownLatch.await();
         agggregateResult(resultSet);
         outService.output(resultSet);
+        logger.info("result set" + resultSet.getResultMap());
         executorService.shutdown();
     }
 
@@ -103,18 +103,21 @@ public class Driver {
                     resultMap.put(key, threadStat);
                 }else{
                     resultStat.java += threadStat.java;
-                    resultStat.javaSqlNum += threadStat.javaSqlNum;
+                    resultStat.javaSqlHitNum += threadStat.javaSqlHitNum;
                     resultStat.c += threadStat.c;
                     resultStat.cSqlNum += threadStat.cSqlNum;
                     resultStat.xml += threadStat.xml;
-                    resultStat.xmlSqlNum += threadStat.xmlSqlNum;
+                    resultStat.xmlSqlHitNum += threadStat.xmlSqlHitNum;
                     resultStat.shell += threadStat.shell;
-                    resultStat.shellSqlNum += threadStat.shellSqlNum;
+                    resultStat.shellSqlHitNum += threadStat.shellSqlHitNum;
                     resultStat.sql += threadStat.sql;
                     resultStat.sqlSqlNum += threadStat.sqlSqlNum;
                     resultStat.ctl += threadStat.ctl;
                     resultStat.others += threadStat.others;
                     resultStat.othersSqlNum += threadStat.othersSqlNum;
+                    resultStat.xmlSqlSum += threadStat.xmlSqlSum;
+                    resultStat.mapperSqlHitNum += threadStat.mapperSqlHitNum;
+                    resultStat.sqlMapSqlHitNum += threadStat.sqlMapSqlHitNum;
                     resultStat.fileTargetList.addAll(threadStat.fileTargetList);
                 }
             });

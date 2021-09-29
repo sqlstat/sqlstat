@@ -16,14 +16,13 @@ public class FileTarget {
     //sqlHits ；
     private List<SqlHit> sqlHitList;
 
-    //sql num;
+    //sql hit num;
     private int sqlItemNum;
 
-    // sqlMap(ibatis) sql cnt
-    private int sqlMapSqlCnt;
-
-    // mapper(mybatis) sql cnt
-    private int mapperSqlCnt;
+    // xml类型文件相关统计
+    private int sqlMapSqlHitCnt; // sqlMap(ibatis) sql hit cnt
+    private int mapperSqlHitCnt; // mapper(mybatis) sql hit cnt
+    private int xmlSqlCnt; // xml 中sql 总数
 
     public FileTarget(String project, File file, FileType fileType){
         this.project = project;
@@ -31,20 +30,20 @@ public class FileTarget {
         this.fileType = fileType;
     }
 
-    public int getSqlMapSqlCnt() {
-        return sqlMapSqlCnt;
+    public int getSqlMapSqlHitCnt() {
+        return sqlMapSqlHitCnt;
     }
 
-    public void setSqlMapSqlCnt(int sqlMapSqlCnt) {
-        this.sqlMapSqlCnt = sqlMapSqlCnt;
+    public void setSqlMapSqlHitCnt(int sqlMapSqlHitCnt) {
+        this.sqlMapSqlHitCnt = sqlMapSqlHitCnt;
     }
 
-    public int getMapperSqlCnt() {
-        return mapperSqlCnt;
+    public int getMapperSqlHitCnt() {
+        return mapperSqlHitCnt;
     }
 
-    public void setMapperSqlCnt(int mapperSqlCnt) {
-        this.mapperSqlCnt = mapperSqlCnt;
+    public void setMapperSqlHitCnt(int mapperSqlHitCnt) {
+        this.mapperSqlHitCnt = mapperSqlHitCnt;
     }
 
     public File getFile() {
@@ -97,5 +96,13 @@ public class FileTarget {
 
     public void addSqlItemNum(){
         this.sqlItemNum++;
+    }
+
+    public int getXmlSqlCnt() {
+        return xmlSqlCnt;
+    }
+
+    public void setXmlSqlCnt(int xmlSqlCnt) {
+        this.xmlSqlCnt = xmlSqlCnt;
     }
 }

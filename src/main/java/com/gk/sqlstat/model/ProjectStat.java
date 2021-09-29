@@ -6,44 +6,48 @@ import java.util.List;
 public class ProjectStat {
     public String projectName;
     public int java;
-    public int javaSqlNum;
+    public int javaSqlHitNum;
     public int c;
     public int cSqlNum;
     public int xml;
-    public int xmlSqlNum;
+    public int xmlSqlHitNum;
     public int shell;
-    public int shellSqlNum;
+    public int shellSqlHitNum;
     public int sql;
     public int sqlSqlNum;
     public int ctl;
     public int others;
     public int othersSqlNum;
-    public int sqlMapSqlCnt; // sqlMap(ibatis) sql统计
-    public int mapperSqlCnt; // mapper(mybatis) sql 统计
+    public int sqlMapSqlHitNum; // sqlMap(ibatis) sql统计
+    public int mapperSqlHitNum; // mapper(mybatis) sql 统计
+    public int xmlSqlSum; // xml中sql总数
 
     public List<FileTarget> fileTargetList = new LinkedList<>();
 
     @Override
     public String toString() {
-        return "projectName='" + projectName + '\'' +
+        return "ProjectStat{" +
+                "projectName='" + projectName + '\'' +
                 ", java=" + java +
-//                ", javaSqlNum=" + javaSqlNum +
+                ", javaSqlNum=" + javaSqlHitNum +
                 ", c=" + c +
-//                ", cSqlNum=" + cSqlNum +
+                ", cSqlNum=" + cSqlNum +
                 ", xml=" + xml +
-//                ", xmlSqlNum=" + xmlSqlNum +
+                ", xmlSqlNum=" + xmlSqlHitNum +
                 ", shell=" + shell +
-//                ", shellSqlNum=" + shellSqlNum +
+                ", shellSqlNum=" + shellSqlHitNum +
                 ", sql=" + sql +
-//                ", sqlSqlNum=" + sqlSqlNum +
+                ", sqlSqlNum=" + sqlSqlNum +
                 ", ctl=" + ctl +
                 ", others=" + others +
-//                ", othersSqlNum=" + othersSqlNum +
-//                ", fileTargetList=" + fileTargetList +
-                ", totalFiles=" + (java + c + xml + shell + sql + ctl + others) +
-                ", totalSqls=" + (javaSqlNum + cSqlNum + xmlSqlNum + shellSqlNum + sqlSqlNum + others)
-                ;
+                ", othersSqlNum=" + othersSqlNum +
+                ", sqlMapSqlCnt=" + sqlMapSqlHitNum +
+                ", mapperSqlCnt=" + mapperSqlHitNum +
+                ", xmlSqlSumCnt=" + xmlSqlSum +
+                '}';
     }
+
+
 }
 
 
