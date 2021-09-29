@@ -67,6 +67,7 @@ public class Driver {
         logger.info("baseDir:{}",baseDir);
         logger.info("queueDepth:{}",queueDepth);
         File baseDirFile = FileUtil.checkBaseDir(baseDir);
+        resultSet.setBaseDirName(baseDirFile == null?null:baseDirFile.getName());
 
         CountDownLatch countDownLatch = new CountDownLatch(workers+1);
         ExecutorService executorService = Executors.newFixedThreadPool(workers + 1);
@@ -119,6 +120,10 @@ public class Driver {
                     resultStat.mapperSqlHitNum += threadStat.mapperSqlHitNum;
                     resultStat.sqlMapSqlHitNum += threadStat.sqlMapSqlHitNum;
                     resultStat.fileTargetList.addAll(threadStat.fileTargetList);
+                    resultStat.javaFileTotalCnt += threadStat.javaFileTotalCnt;
+                    resultStat.xmlFileTotalCnt += threadStat.xmlFileTotalCnt;
+                    resultStat.shellFileTotalCnt += threadStat.shellFileTotalCnt;
+                    resultStat.sqlFileTotalCnt += threadStat.sqlFileTotalCnt;
                 }
             });
         });
