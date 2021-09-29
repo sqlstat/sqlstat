@@ -70,7 +70,7 @@ public class Driver {
         File baseDirFile = FileUtil.checkBaseDir(baseDir);
 
         CountDownLatch countDownLatch = new CountDownLatch(workers+1);
-        ExecutorService executorService = Executors.newFixedThreadPool(workers);
+        ExecutorService executorService = Executors.newFixedThreadPool(workers + 1);
         for(int i=0; i<workers; i++){
             FileStatWorker fileStatWorker = new FileStatWorker(countDownLatch, blockingQueue);
             fileStatWorker.setResultSet(resultSet);
@@ -78,24 +78,20 @@ public class Driver {
         }
 
         FileScanWorker fileScanWorker = new FileScanWorker(countDownLatch, blockingQueue);
+        fileScanWorker.setWorkers(workers);
         fileScanWorker.setScanFileFilter(scanFileFilter);
         fileScanWorker.setBaseDirFile(baseDirFile);
         fileScanWorker.setBaseDirIsProject(baseDirIsProject);
         fileScanWorker.setExcludeDirList(excludeDirList);
-        fileScanWorker.run();
+        executorService.execute(fileScanWorker);
 
-        addPoison();
         countDownLatch.await();
         agggregateResult(resultSet);
         outService.output(resultSet);
         executorService.shutdown();
     }
 
-    private void addPoison() throws InterruptedException {
-        for(int i=0; i<workers; i++){
-            blockingQueue.put(new FileTarget(null, null, FileType.TASKEND));
-        }
-    }
+
 
     private void agggregateResult(ResultSet resultSet){
         List<Map<String, ProjectStat>> list = resultSet.getThreadResultList();
