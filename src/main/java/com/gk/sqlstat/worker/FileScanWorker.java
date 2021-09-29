@@ -24,6 +24,7 @@ public class FileScanWorker implements Runnable {
     private boolean baseDirIsProject;
     private List<String> excludeDirList;
     private List<String> excludeDirNameList;
+    private int workers;
 
     public FileScanWorker(CountDownLatch countDownLatch, BlockingQueue<FileTarget> blockingQueue){
         this.countDownLatch = countDownLatch;
@@ -55,7 +56,11 @@ public class FileScanWorker implements Runnable {
                 }
             }
         }
-
+        try {
+            addPoison();
+        } catch(InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
         countDownLatch.countDown();
     }
 
@@ -103,6 +108,13 @@ public class FileScanWorker implements Runnable {
         }
     }
 
+    private void addPoison() throws InterruptedException {
+        for(int i=0; i<workers; i++){
+            blockingQueue.put(new FileTarget(null, null, FileType.TASKEND));
+        }
+        logger.info("poison added");
+    }
+
     private boolean isExcludeFile(File file) {
         if(excludeDirNameList == null){
             return false;
@@ -115,6 +127,14 @@ public class FileScanWorker implements Runnable {
             logger.error(e.getMessage(), e);
         }
         return false;
+    }
+
+    public int getWorkers() {
+        return workers;
+    }
+
+    public void setWorkers(int workers) {
+        this.workers = workers;
     }
 
     public void setScanFileFilter(ScanFileFilter scanFileFilter){
