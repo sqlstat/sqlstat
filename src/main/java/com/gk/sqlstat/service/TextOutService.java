@@ -117,15 +117,15 @@ public class TextOutService extends AbstractOutService implements OutService {
         // sheet2 增加统计信息
         Sheet statisticSheet = workbook.createSheet("sql hit statistics");
         statisticSheet.setDefaultRowHeight((short) 400);
-        List<String> statisticHeader = Arrays.asList("项目名称 project_name", "xml文件命中总数", "ibatis-xml配置文件中命中sql总数",
-                "mybatis-mapper配置文件命中sql总数", "java文件命中总数", "java文件中命中sql总数", "sql文件命中总数", "sql文件中sql命中总数",
-                "shell文件命中总数", "shell文件中sql命中总数");
+        List<String> statisticHeader = Arrays.asList("项目名称 project_name", "xml类型文件中命中规则的文件数", "xml类型文件中sql总数", "ibatis-xml配置文件中命中规则的sql总数",
+                "mybatis-mapper配置文件命中规则的sql总数", "java类型文件中命中规则文件数", "java类型文件中命中规则的sql总数(当前无法总计java文件中的sql数)", "sql类型文件中命中规则文件数", "sql类型文件中sql命中规则的sql总数(当前无法总计sql文件中的sql数)",
+                "shell类型文件中命中规则的文件数", "shell类型文件中命中规则的sql总数(当前无法总计shell文件中的sql数)");
         int statisticRrowNum = 0;
         Row statisticHead = statisticSheet.createRow(statisticRrowNum++);
         for (int i = 0; i < statisticHeader.size(); i++) {
             Cell cell = statisticHead.createCell(i);
             cell.setCellValue(statisticHeader.get(i));
-            statisticSheet.setColumnWidth(i, 8000);
+            statisticSheet.setColumnWidth(i, 12000);
             cell.setCellStyle(cellStyle);
         }
         for (String projectName : projectNameSet) {
@@ -134,14 +134,15 @@ public class TextOutService extends AbstractOutService implements OutService {
             int cellNum = 0;
             statisticRow.createCell(cellNum++).setCellValue(projectName);
             statisticRow.createCell(cellNum++).setCellValue(projectStat.xml);
-            statisticRow.createCell(cellNum++).setCellValue(projectStat.sqlMapSqlCnt);
-            statisticRow.createCell(cellNum++).setCellValue(projectStat.mapperSqlCnt);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.xmlSqlSum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.sqlMapSqlHitNum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.mapperSqlHitNum);
             statisticRow.createCell(cellNum++).setCellValue(projectStat.java);
-            statisticRow.createCell(cellNum++).setCellValue(projectStat.javaSqlNum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.javaSqlHitNum);
             statisticRow.createCell(cellNum++).setCellValue(projectStat.sql);
             statisticRow.createCell(cellNum++).setCellValue(projectStat.sqlSqlNum);
             statisticRow.createCell(cellNum++).setCellValue(projectStat.shell);
-            statisticRow.createCell(cellNum++).setCellValue(projectStat.shellSqlNum);
+            statisticRow.createCell(cellNum++).setCellValue(projectStat.shellSqlHitNum);
         }
 
 

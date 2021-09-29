@@ -49,44 +49,60 @@ public class FileStatWorker implements Runnable {
                 logger.trace("project {}, filename {}, type {}", projectName, file.getName(), fileType);
 
                 fileTarget = chechService.check(fileTarget);
-                if(fileTarget.isTarget()){
-                    ProjectStat projectStat = threadMap.get(projectName);
-                    if(projectStat == null){
-                        projectStat = new ProjectStat();
-                        projectStat.projectName = projectName;
-                        threadMap.put(projectName, projectStat);
-                    }
-                    switch(fileTarget.getFileType()){
-                        case JAVA:
+                ProjectStat projectStat = threadMap.get(projectName);
+                if(projectStat == null){
+                    projectStat = new ProjectStat();
+                    projectStat.projectName = projectName;
+                    threadMap.put(projectName, projectStat);
+                }
+                switch(fileTarget.getFileType()){
+                    case JAVA:
+                        if (fileTarget.isTarget()) {
                             projectStat.java += 1;
-                            projectStat.javaSqlNum += fileTarget.getSqlItemNum();
-                            break;
-                        case C:
+                            projectStat.javaSqlHitNum += fileTarget.getSqlItemNum();
+                        }
+                        break;
+                    case C:
+                        if (fileTarget.isTarget()) {
                             projectStat.c += 1;
                             projectStat.cSqlNum += fileTarget.getSqlItemNum();
-                            break;
-                        case XML:
+                        }
+                        break;
+                    case XML:
+                        if (fileTarget.isTarget()) {
                             projectStat.xml += 1;
-                            projectStat.xmlSqlNum += fileTarget.getSqlItemNum();
-                            projectStat.sqlMapSqlCnt += fileTarget.getSqlMapSqlCnt();
-                            projectStat.mapperSqlCnt += fileTarget.getMapperSqlCnt();
-                            break;
-                        case SHELL:
+                            projectStat.xmlSqlHitNum += fileTarget.getSqlItemNum();
+                            projectStat.sqlMapSqlHitNum += fileTarget.getSqlMapSqlHitCnt();
+                            projectStat.mapperSqlHitNum += fileTarget.getMapperSqlHitCnt();
+                        }
+                        projectStat.xmlSqlSum += fileTarget.getXmlSqlCnt();
+                        break;
+                    case SHELL:
+                        if (fileTarget.isTarget()) {
                             projectStat.shell += 1;
-                            projectStat.shellSqlNum += fileTarget.getSqlItemNum();
-                            break;
-                        case SQL:
+                            projectStat.shellSqlHitNum += fileTarget.getSqlItemNum();
+                        }
+                        break;
+                    case SQL:
+                        if (fileTarget.isTarget()) {
                             projectStat.sql += 1;
                             projectStat.sqlSqlNum += fileTarget.getSqlItemNum();
-                            break;
-                        case CTL:
+                        }
+                        break;
+                    case CTL:
+                        if (fileTarget.isTarget()) {
                             projectStat.ctl += 1;
-                            break;
-                        case OTHERS:
+                        }
+                        break;
+                    case OTHERS:
+                        if (fileTarget.isTarget()){
                             projectStat.others += 1;
                             projectStat.othersSqlNum += fileTarget.getSqlItemNum();
-                            break;
-                    }
+                        }
+                        break;
+                }
+
+                if (fileTarget.isTarget()) {
                     projectStat.fileTargetList.add(fileTarget);
                 }
 

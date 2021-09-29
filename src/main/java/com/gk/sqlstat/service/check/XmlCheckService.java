@@ -1,5 +1,6 @@
 package com.gk.sqlstat.service.check;
 
+import com.gk.sqlstat.constant.AppConstants;
 import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.model.Rule;
@@ -52,9 +53,8 @@ public class XmlCheckService implements ChechService {
                 Iterator it = xmlroot.elementIterator();
                 while (it.hasNext()) {
                     Element element = (Element) it.next();
-                    if(element.getName().equals("select") || element.getName().equals("insert")
-                            || element.getName().equals("update") || element.getName().equals("delete")){
-
+                    if(AppConstants.XML_SQL_TAGS.contains(element.getName())){
+                        fileTarget.setXmlSqlCnt(fileTarget.getXmlSqlCnt() + 1);
                         StringBuilder stringBuilder = new StringBuilder();
                         for(Node node : element.content()){
                             stringBuilder.append(node.asXML());
@@ -74,9 +74,9 @@ public class XmlCheckService implements ChechService {
                                 addList.addAll(sqlHitList);
                             }
                             if (document.getDocType().getElementName().equals("sqlMap")) {
-                                fileTarget.setSqlMapSqlCnt(fileTarget.getSqlMapSqlCnt() + 1);
+                                fileTarget.setSqlMapSqlHitCnt(fileTarget.getSqlMapSqlHitCnt() + 1);
                             } else if (document.getDocType().getElementName().equals("mapper")) {
-                                fileTarget.setMapperSqlCnt(fileTarget.getMapperSqlCnt() + 1);
+                                fileTarget.setMapperSqlHitCnt(fileTarget.getMapperSqlHitCnt() + 1);
                             }
                             //no sql parser
                             fileTarget.addSqlItemNum();
