@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Configuration
 @ComponentScan
-@PropertySource(value="classpath:application.properties", encoding="UTF-8")
+@PropertySource(value="${applicationPath:classpath:application.properties}", encoding="UTF-8")
 @Component
 public class AppStart {
     private static final Logger logger = LoggerFactory.getLogger(AppStart.class);
@@ -31,6 +31,12 @@ public class AppStart {
     StandardEnvironment env;
 
     public static void main(String[] args) throws InterruptedException {
+        // 从参数读取配置
+        if (args != null && args.length > 0) {
+            logger.info("指定配置文件路径：" + args);
+            System.setProperty("applicationPath", args[0]);
+        }
+
         AppStart appStart = SpringContext.getBean(AppStart.class);
         Driver driver = SpringContext.getBean(Driver.class);
         logger.info("{} initialized... ", appStart.name);
