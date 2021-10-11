@@ -8,6 +8,7 @@ import com.gk.sqlstat.util.FileUtil;
 import com.gk.sqlstat.util.ScanFileFilter;
 import com.gk.sqlstat.worker.FileScanWorker;
 import com.gk.sqlstat.worker.FileStatWorker;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 @Component
+@Data
 public class Driver {
     private static final Logger logger = LoggerFactory.getLogger(Driver.class);
 

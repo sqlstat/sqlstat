@@ -1,6 +1,7 @@
 package com.gk.sqlstat;
 
 import com.gk.sqlstat.model.Rule;
+import com.gk.sqlstat.service.TextOutService;
 import com.gk.sqlstat.util.RuleUtil;
 import com.gk.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
@@ -32,13 +33,30 @@ public class AppStart {
 
     public static void main(String[] args) throws InterruptedException {
         // 从参数读取配置
+        Driver driver = SpringContext.getBean(Driver.class);
         if (args != null && args.length > 0) {
-            logger.info("指定配置文件路径：" + args);
-            System.setProperty("applicationPath", args[0]);
+            logger.info("自定义配置：" + args);
+            if (args.length == 1) {
+                logger.info("指定配置文件：" + args[0]);
+                System.setProperty("applicationPath", args[0]);
+            } else if (args.length == 2) {
+                logger.info(String.format("指定扫描路径及输出路径：%s，%s",args[0], args[1]));
+                driver.setBaseDir(args[0]);
+                TextOutService outService = (TextOutService)driver.getOutService();
+                outService.setResultDir(args[1]);
+            } else if (args.length == 3) {
+                logger.info(String.format("指定配置文件路径、扫描路径及输出路径：%s，%s，%s",args[0], args[1], args[2]));
+                System.setProperty("applicationPath", args[0]);
+                driver.setBaseDir(args[1]);
+                TextOutService outService = (TextOutService)driver.getOutService();
+                outService.setResultDir(args[2]);
+            } else {
+                logger.error("参数数量不支持， " + args);
+                return;
+            }
         }
 
         AppStart appStart = SpringContext.getBean(AppStart.class);
-        Driver driver = SpringContext.getBean(Driver.class);
         logger.info("{} initialized... ", appStart.name);
         driver.launch();
         logger.info("{} finished...", appStart.name);

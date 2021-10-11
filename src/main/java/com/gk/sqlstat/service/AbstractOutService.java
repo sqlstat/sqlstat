@@ -3,6 +3,7 @@ package com.gk.sqlstat.service;
 import com.gk.sqlstat.model.ProjectStat;
 import com.gk.sqlstat.model.ResultSet;
 import com.gk.sqlstat.util.FileUtil;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+@Data
 public abstract class AbstractOutService implements OutService{
     private static final Logger logger = LoggerFactory.getLogger(AbstractOutService.class);
 
