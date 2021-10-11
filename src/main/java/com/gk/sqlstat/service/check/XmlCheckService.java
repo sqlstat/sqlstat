@@ -5,6 +5,7 @@ import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.model.Rule;
 import com.gk.sqlstat.model.SqlHit;
+import com.gk.sqlstat.util.FileUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -23,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class XmlCheckService implements ChechService {
+public class XmlCheckService implements CheckService {
     private static final Logger logger = LoggerFactory.getLogger(XmlCheckService.class);
 
     @Resource
@@ -41,13 +42,12 @@ public class XmlCheckService implements ChechService {
         }
 
         FileType fileType = fileTarget.getFileType();
-        File file = fileTarget.getFile();
         String projectName = fileTarget.getProject();
         try {
-            Document document = reader.read(fileTarget.getFile());
+            Document document = FileUtil.read(fileTarget, reader);
             //ibatis
-            if(document.getDocType().getElementName().equals("sqlMap")
-                || document.getDocType().getElementName().equals("mapper")){
+            if(document.getDocType() != null && (document.getDocType().getElementName().equals("sqlMap")
+                || document.getDocType().getElementName().equals("mapper"))){
                 logger.trace("ibatis/mybatis mapping file found:"+document.getName());
                 fileTarget.setSqlMapOrMapper(true);
                 Element xmlroot = document.getRootElement();
@@ -82,7 +82,7 @@ public class XmlCheckService implements ChechService {
                             //no sql parser
                             fileTarget.addSqlItemNum();
                             logger.info("{} is found, project:{}, file:{},  sql:{}",
-                                    fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget(), sql);
+                                    fileType, projectName, fileTarget.getFilePath(), fileTarget.isTarget(), sql);
                         }
                     }
                 }
@@ -108,7 +108,7 @@ public class XmlCheckService implements ChechService {
 //                fileTarget = commonFileCheckService.check(fileTarget);
 //            }
         } catch (Exception e) {
-//            logger.error(e.getMessage());
+            logger.error(e.toString());
 //            fileTarget = commonFileCheckService.check(fileTarget);
         }
         return fileTarget;

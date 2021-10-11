@@ -4,7 +4,7 @@ import com.gk.sqlstat.model.FileTarget;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JavaFileCheckService implements ChechService {
+public class JavaFileCheckService implements CheckService {
     @Override
     public FileTarget check(FileTarget fileTarget) {
         return fileTarget;

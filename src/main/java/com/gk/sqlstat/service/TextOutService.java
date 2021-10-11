@@ -86,7 +86,7 @@ public class TextOutService extends AbstractOutService implements OutService {
             ProjectStat projectStat = resultMap.get(projectName);
             for(FileTarget fileTarget : projectStat.fileTargetList){
                 try {
-                    String fileName = fileTarget.getFile().getCanonicalPath();
+                    String fileName = fileTarget.getFilePath();
                     for(SqlHit sqlHit : fileTarget.getSqlHitList()){
                         String ruleMapName = sqlHit.getRuleMapName();
                         int ruleId = sqlHit.getRuleId();
@@ -108,7 +108,7 @@ public class TextOutService extends AbstractOutService implements OutService {
 //                        row.createCell(cellNum++).setCellValue(sqlHit.getOriginalSql() == null ? null : sqlHit.getOriginalSql().trim());
                         row.createCell(cellNum++).setCellValue(originalSql);
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

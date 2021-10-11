@@ -3,15 +3,21 @@ package com.gk.sqlstat.worker;
 import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.util.ScanFileFilter;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class FileScanWorker implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(FileScanWorker.class);
@@ -39,7 +45,7 @@ public class FileScanWorker implements Runnable {
             logger.info("projectName {}", projectName);
             try {
                 dirRecursion(baseDirFile, projectName);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }else{
@@ -50,7 +56,7 @@ public class FileScanWorker implements Runnable {
                     logger.info("projectName {}", projectName);
                     try {
                         dirRecursion(projectDir, projectName);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
@@ -64,7 +70,7 @@ public class FileScanWorker implements Runnable {
         countDownLatch.countDown();
     }
 
-    private void dirRecursion(File baseDir, String projectName) throws InterruptedException {
+    private void dirRecursion(File baseDir, String projectName) throws Exception {
         if(!baseDir.isDirectory()){
             logger.error("input dir is not dir, {}", baseDir.getAbsolutePath());
             return;
@@ -83,13 +89,39 @@ public class FileScanWorker implements Runnable {
                 for(String ext: scanFileFilter.getFileExtentions()){
                     if(filename.endsWith(ext)||filename.endsWith(ext.toUpperCase())){
                         FileType fileType = FileType.getFileTypeByExt(ext);
-                        FileTarget fileTarget = new FileTarget(projectName, file, fileType);
-                        blockingQueue.put(fileTarget);
+                        if (fileType.equals(FileType.JAR)) {
+                            // jar类型的文件 读取其中文件进行处理
+                            jarFileScan(blockingQueue, projectName, file);
+                        } else {
+                            FileTarget fileTarget = new FileTarget(projectName, file, fileType, file.getCanonicalPath());
+                            blockingQueue.put(fileTarget);
+                        }
                         logger.trace("put into queue, {}, queueSize {}", file.getAbsolutePath(),blockingQueue.size());
                         break;
                     }
                 }
             }
+        }
+    }
+
+    private void jarFileScan(BlockingQueue blockingQueue, String projectName, File jarFile) throws Exception {
+        JarFile jar = new JarFile(jarFile);
+        Enumeration<JarEntry> entries = jar.entries();
+        String jarPath = jarFile.getCanonicalPath();
+        while (entries.hasMoreElements()) {
+            JarEntry jarEntry = entries.nextElement();
+            if (!jarEntry.isDirectory()) {
+                // 如果是jar文件，暂不处理
+                if (jarEntry.getName().endsWith(".jar") || jarEntry.getName().endsWith(".jar".toUpperCase())) {
+                    logger.info("****** jar file has a jar in it！ path: " + jarFile.getCanonicalPath());
+                    continue;
+                }
+                String filePath = jarPath + "-" + jarEntry.getName();
+                FileTarget fileTarget = new FileTarget(projectName, jarFile, FileType.JAR, filePath, jarEntry, jar);
+                blockingQueue.put(fileTarget);
+            }
+
+
         }
     }
 
@@ -110,7 +142,7 @@ public class FileScanWorker implements Runnable {
 
     private void addPoison() throws InterruptedException {
         for(int i=0; i<workers; i++){
-            blockingQueue.put(new FileTarget(null, null, FileType.TASKEND));
+            blockingQueue.put(new FileTarget(null, null, FileType.TASKEND, null));
         }
         logger.info("poison added");
     }

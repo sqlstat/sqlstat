@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class SqlStatChechService implements ChechService {
+public class SqlStatCheckService implements CheckService {
 
-    private Map<FileType, ChechService> chechServiceMap;
+    private Map<FileType, CheckService> chechServiceMap;
 
     @Resource
     private CommonFileCheckService commonFileCheckService;
@@ -23,22 +23,31 @@ public class SqlStatChechService implements ChechService {
     @Resource
     private XmlCheckService xmlCheckService;
 
+    @Resource
+    private JarFileCheckService jarFileCheckService;
+
     @PostConstruct
     public void init(){
         chechServiceMap = new HashMap<>();
-        chechServiceMap.put(FileType.JAVA, javaFileCheckService);
+        chechServiceMap.put(FileType.JAVA, commonFileCheckService);
         chechServiceMap.put(FileType.C, commonFileCheckService);
         chechServiceMap.put(FileType.XML, xmlCheckService);
         chechServiceMap.put(FileType.SHELL, commonFileCheckService);
         chechServiceMap.put(FileType.SQL, commonFileCheckService);
         chechServiceMap.put(FileType.CTL, commonFileCheckService);
         chechServiceMap.put(FileType.OTHERS, commonFileCheckService);
+        chechServiceMap.put(FileType.JAR, jarFileCheckService);
     }
 
     @Override
     public FileTarget check(FileTarget fileTarget) {
-        ChechService chechService = chechServiceMap.get(fileTarget.getFileType());
-        fileTarget = chechService.check(fileTarget);
+        try {
+            CheckService checkService = chechServiceMap.get(fileTarget.getFileType());
+            fileTarget = checkService.check(fileTarget);
+            return fileTarget;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         return fileTarget;
     }
 }

@@ -1,7 +1,12 @@
 package com.gk.sqlstat.util;
 
+import com.gk.sqlstat.constant.FileType;
+import com.gk.sqlstat.model.FileTarget;
+import org.dom4j.Document;
+import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import java.io.*;
 import java.nio.channels.FileChannel;
@@ -27,6 +32,14 @@ public class FileUtil {
         }
     }
 
+    public static Document read(FileTarget fileTarget, SAXReader reader) throws Exception{
+        if (fileTarget.isJarFile()) {
+            return reader.read(fileTarget.getJarFile().getInputStream(fileTarget.getJarEntry()));
+        } else {
+            return reader.read(fileTarget.getFile());
+        }
+    }
+
     public static String read(File file) {
         StringBuilder sb = new StringBuilder();
         try(BufferedReader in = new BufferedReader(new FileReader(file))){
@@ -38,6 +51,27 @@ public class FileUtil {
             logger.error(e.getMessage(), e);
         }
         return sb.toString();
+    }
+
+    public static String read(InputStream inputStream) {
+        StringBuilder sb = new StringBuilder();
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(inputStream))){
+            String s;
+            while ((s = in.readLine()) != null) {
+                sb.append(s +"\n");
+            }
+        }catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return sb.toString();
+    }
+
+    public static String read(FileTarget fileTarget) throws Exception{
+        if (fileTarget.isJarFile()) {
+            return read(fileTarget.getJarFile().getInputStream(fileTarget.getJarEntry()));
+        } else {
+            return read(fileTarget.getFile());
+        }
     }
 
     public static void copy(File source, File target)  {

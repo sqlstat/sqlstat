@@ -5,12 +5,15 @@ import lombok.Data;
 
 import java.io.File;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 @Data
 public class FileTarget {
     private String project;
     private File file;
     private FileType fileType;
+    private String filePath;
 
     //hit by rules
     private boolean target;
@@ -37,11 +40,28 @@ public class FileTarget {
     // sql类型文件统计
     private int sqlFileCnt; // sql文件总数统计
 
+    // jar文件相关
+    private JarEntry jarEntry;
+    private boolean isJarFile;
+    private JarFile jarFile;
 
-    public FileTarget(String project, File file, FileType fileType){
+
+
+    public FileTarget(String project, File file, FileType fileType, String filePath){
         this.project = project;
         this.file = file;
         this.fileType = fileType;
+        this.filePath = filePath;
+    }
+
+    public FileTarget(String project, File file, FileType fileType, String filePath, JarEntry jarEntry, JarFile jar){
+        this.project = project;
+        this.file = file;
+        this.fileType = fileType;
+        this.filePath = filePath;
+        this.jarEntry = jarEntry;
+        this.isJarFile = true;
+        this.jarFile = jar;
     }
 
     public int getSqlMapSqlHitCnt() {

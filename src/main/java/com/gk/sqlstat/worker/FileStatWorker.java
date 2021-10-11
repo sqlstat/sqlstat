@@ -4,8 +4,8 @@ import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.model.ProjectStat;
 import com.gk.sqlstat.model.ResultSet;
-import com.gk.sqlstat.service.check.ChechService;
-import com.gk.sqlstat.service.check.SqlStatChechService;
+import com.gk.sqlstat.service.check.CheckService;
+import com.gk.sqlstat.service.check.SqlStatCheckService;
 import com.gk.sqlstat.util.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class FileStatWorker implements Runnable {
     @Override
     public void run() {
         logger.info("FileStatWorker Started");
-        ChechService chechService = SpringContext.getBean(SqlStatChechService.class);
+        CheckService checkService = SpringContext.getBean(SqlStatCheckService.class);
 
         while(true){
             try {
@@ -48,7 +48,7 @@ public class FileStatWorker implements Runnable {
                 FileType fileType = fileTarget.getFileType();
                 logger.trace("project {}, filename {}, type {}", projectName, file.getName(), fileType);
 
-                fileTarget = chechService.check(fileTarget);
+                fileTarget = checkService.check(fileTarget);
                 ProjectStat projectStat = threadMap.get(projectName);
                 if(projectStat == null){
                     projectStat = new ProjectStat();

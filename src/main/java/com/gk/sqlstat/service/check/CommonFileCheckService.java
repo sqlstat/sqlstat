@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class CommonFileCheckService implements ChechService {
+public class CommonFileCheckService implements CheckService {
     private static final Logger logger = LoggerFactory.getLogger(CommonFileCheckService.class);
 
     @Resource(name="commonSqlRuleMap")
@@ -55,31 +55,36 @@ public class CommonFileCheckService implements ChechService {
 
     @Override
     public FileTarget check(FileTarget fileTarget) {
-        FileType fileType = fileTarget.getFileType();
-        File file = fileTarget.getFile();
-        String projectName = fileTarget.getProject();
-        String text = FileUtil.read(file);
-        logger.trace("filename:{}, text:\n{}", file.getAbsolutePath(), text);
-        if(fileType.equals(FileType.JAVA) || fileType.equals(FileType.C) || fileType.equals(FileType.XML) ||
-                fileType.equals(FileType.SHELL) || fileType.equals(FileType.SQL) || fileType.equals(FileType.OTHERS)){
-            List<SqlHit> sqlHitList = checkText(text, fileType, false);
-            if(!sqlHitList.isEmpty()){
-                fileTarget.setTarget(true);
-                fileTarget.setSqlHitList(sqlHitList);
-                //no sql parser
-                fileTarget.setSqlItemNum(0);
-                logger.info("{} is found, project:{}, file:{}, contain sql {}",
-                        fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget());
-            }
+        try {
+            FileType fileType = fileTarget.getFileType();
+            File file = fileTarget.getFile();
+            String projectName = fileTarget.getProject();
+            String text = FileUtil.read(fileTarget);
+            logger.trace("filename:{}, text:\n{}", file.getAbsolutePath(), text);
+            if(fileType.equals(FileType.JAVA) || fileType.equals(FileType.C) || fileType.equals(FileType.XML) ||
+                    fileType.equals(FileType.SHELL) || fileType.equals(FileType.SQL) || fileType.equals(FileType.OTHERS)){
+                List<SqlHit> sqlHitList = checkText(text, fileType, false);
+                if(!sqlHitList.isEmpty()){
+                    fileTarget.setTarget(true);
+                    fileTarget.setSqlHitList(sqlHitList);
+                    //no sql parser
+                    fileTarget.setSqlItemNum(0);
+                    logger.info("{} is found, project:{}, file:{}, contain sql {}",
+                            fileType, projectName, file.getAbsolutePath(), fileTarget.isTarget());
+                }
 
-        }else if(fileType.equals(FileType.CTL)){
-            List<SqlHit> sqlHitList = checkText(text,fileType, false);
-            if(!sqlHitList.isEmpty()){
-                fileTarget.setTarget(true);
-                fileTarget.setSqlHitList(sqlHitList);
-                logger.info("ctl file is found, project:{}, file:{}", projectName, file.getAbsolutePath());
+            }else if(fileType.equals(FileType.CTL)){
+                List<SqlHit> sqlHitList = checkText(text,fileType, false);
+                if(!sqlHitList.isEmpty()){
+                    fileTarget.setTarget(true);
+                    fileTarget.setSqlHitList(sqlHitList);
+                    logger.info("ctl file is found, project:{}, file:{}", projectName, file.getAbsolutePath());
+                }
             }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
+
 
         return fileTarget;
     }
