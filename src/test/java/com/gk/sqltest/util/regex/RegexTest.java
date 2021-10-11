@@ -90,4 +90,24 @@ public class RegexTest {
 
     }
 
+    @Test
+    public void test09(){
+        String sql = "SELECT  concat('a','b') /  'a'||'b' FROM test t ";
+        System.out.println(sql);
+        String regex = "||";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
+
+
+    @Test
+    public void test10(){
+        String sql = "SELECT sqname.nextval FROM test t ";
+        System.out.println(sql);
+        String regex = "\\.nextval";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println("regex match? "+matcher.find());
+    }
 }
