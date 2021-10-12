@@ -62,7 +62,7 @@ public class TextOutService extends AbstractOutService implements OutService {
     }
 
     private void outputExcel(ResultSet resultSet){
-        List<String> header = Arrays.asList("file", "ruleId", "regex", "Suggestion", "originalSql");
+        List<String> header = Arrays.asList("file", "rule map name", "ruleId", "regex", "Suggestion", "originalSql");
         Workbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("sql hit details");
         sheet.setDefaultRowHeight((short) 400);
@@ -75,7 +75,7 @@ public class TextOutService extends AbstractOutService implements OutService {
         for (int i = 0; i < header.size(); i++) {
             Cell cell = head.createCell(i);
             cell.setCellValue(header.get(i));
-            sheet.setColumnWidth(i, 4000);
+            sheet.setColumnWidth(i, 8000);
             cell.setCellStyle(cellStyle);
         }
 
@@ -95,6 +95,7 @@ public class TextOutService extends AbstractOutService implements OutService {
                         Row row = sheet.createRow(rowNum++);
                         int cellNum = 0;
                         row.createCell(cellNum++).setCellValue(fileName);
+                        row.createCell(cellNum++).setCellValue(ruleMapName);
                         row.createCell(cellNum++).setCellValue(ruleId);
                         row.createCell(cellNum++).setCellValue(rule.getRegex());
                         row.createCell(cellNum++).setCellValue(rule.getSuggrestion());
