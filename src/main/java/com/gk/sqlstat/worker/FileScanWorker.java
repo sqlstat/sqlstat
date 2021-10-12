@@ -30,6 +30,7 @@ public class FileScanWorker implements Runnable {
     private boolean baseDirIsProject;
     private List<String> excludeDirList;
     private List<String> excludeDirNameList;
+    private List<String> excludeDirMatchList; // 规则匹配的排除的文件
     private int workers;
 
     public FileScanWorker(CountDownLatch countDownLatch, BlockingQueue<FileTarget> blockingQueue){
@@ -128,15 +129,21 @@ public class FileScanWorker implements Runnable {
     private void initExcludeDirs(){
         if(excludeDirList!=null){
             excludeDirNameList = new ArrayList<>();
+            excludeDirMatchList = new ArrayList<>();
             try {
                 String baseDirStr = baseDirFile.getCanonicalPath();
                 for(String excludeDirStr : excludeDirList){
-                    excludeDirNameList.add(baseDirStr+File.separator+excludeDirStr);
+                    if (!excludeDirStr.startsWith("*/")) {
+                        excludeDirNameList.add(baseDirStr+File.separator+excludeDirStr);
+                    } else {
+                        excludeDirMatchList.add(excludeDirStr.substring(2, excludeDirStr.length()));
+                    }
                 }
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
             logger.debug("excludeFileList:{}", excludeDirNameList);
+            logger.debug("excludeMatchList:{}", excludeDirMatchList);
         }
     }
 
@@ -148,12 +155,17 @@ public class FileScanWorker implements Runnable {
     }
 
     private boolean isExcludeFile(File file) {
-        if(excludeDirNameList == null){
+        if(excludeDirNameList == null && excludeDirMatchList == null){
             return false;
         }
         try {
             if(excludeDirNameList.contains(file.getCanonicalPath())){
                 return true;
+            }
+            for (String excludeMatch: excludeDirMatchList) {
+                if (file.getCanonicalPath().endsWith(File.separator + excludeMatch)) {
+                    return true;
+                }
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
