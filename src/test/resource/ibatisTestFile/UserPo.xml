@@ -28,4 +28,8 @@ type="com.gk.demos.ibatis.data.po.UserPo"/>
 		</dynamic>
 	</insert>
 
+	<procedure id="callProcedure">
+		{call p(a,b,c)}
+	</procedure>
+
 </sqlMap>
