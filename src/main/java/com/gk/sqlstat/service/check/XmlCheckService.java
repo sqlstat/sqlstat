@@ -62,9 +62,10 @@ public class XmlCheckService implements CheckService {
                         }
 //                        String sql = element.getStringValue().trim();
                         String sql = stringBuilder.toString();
+                        String sqlId = element.attributeValue("id");
                         logger.trace("ibatis/mybatis sql found:" + sql);
 //                        List<SqlHit> sqlHitList = commonFileCheckService.checkText(sql, fileType, true);
-                        List<SqlHit> sqlHitList = checkSql(sql);
+                        List<SqlHit> sqlHitList = checkSql(sql, sqlId);
                         if(!sqlHitList.isEmpty()){
                             fileTarget.setTarget(true);
                             List<SqlHit> addList = fileTarget.getSqlHitList();
@@ -114,7 +115,7 @@ public class XmlCheckService implements CheckService {
         return fileTarget;
     }
 
-    public List<SqlHit> checkSql(String sql){
+    public List<SqlHit> checkSql(String sql, String sqlId){
         List resultList = new ArrayList<>();
         targetSqlRuleMap.forEach((index, rule) ->{
             try{
@@ -122,7 +123,7 @@ public class XmlCheckService implements CheckService {
                 Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(sql);
                 if(matcher.find()){
-                    resultList.add(new SqlHit("targetSqlRuleMap", index, sql));
+                    resultList.add(new SqlHit("targetSqlRuleMap", index, sql, sqlId));
                 }
             }catch(Throwable e){
                 logger.error(e.getMessage(), e);
