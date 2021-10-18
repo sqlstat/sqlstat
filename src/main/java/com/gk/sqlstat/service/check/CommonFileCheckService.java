@@ -26,6 +26,9 @@ public class CommonFileCheckService implements CheckService {
     @Resource(name="commonSqlRuleMap")
     private Map<Integer, Rule> commonSqlRuleMap;
 
+    @Resource(name="targetSqlRuleMap")
+    private Map<Integer, Rule> targetSqlRuleMap;
+
     @Resource(name="ctlRuleMap")
     private Map<Integer, Rule> ctlRuleMap;
 

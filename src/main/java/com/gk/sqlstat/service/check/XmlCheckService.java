@@ -54,6 +54,7 @@ public class XmlCheckService implements CheckService {
                 Iterator it = xmlroot.elementIterator();
                 while (it.hasNext()) {
                     Element element = (Element) it.next();
+                    logger.info("element name: {}}", element.getName());
                     if(AppConstants.XML_SQL_TAGS.contains(element.getName())){
                         fileTarget.setXmlSqlCnt(fileTarget.getXmlSqlCnt() + 1);
                         StringBuilder stringBuilder = new StringBuilder();

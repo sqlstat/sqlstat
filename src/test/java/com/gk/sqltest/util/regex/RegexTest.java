@@ -122,4 +122,71 @@ public class RegexTest {
         Matcher matcher = pattern.matcher(sql);
         System.out.println(String.format("regex match: %s, match count: %s",matcher.find(), matcher.groupCount()));
     }
+
+    @Test
+    public void test12() {
+        String sql="select rs.* from t full  outer   join b";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+        String regex = "full\\s+outer\\s+join";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test13() {
+        String sql="select rs.* from t where a <= 2";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "([<>!]\\s+=)|<\\s+>";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test14() {
+        String sql="select a from b where a = #abv:DATE#";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = ":\\s*date\\s*\\#";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test15() {
+        String sql="<result property=\"A\" column=\"a\" jdbcType = \"DATE\"/>";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "jdbcType\\s*=\\s*\"DATE\"";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
 }
