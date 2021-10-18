@@ -98,14 +98,18 @@ public class CommonFileCheckService implements CheckService {
                 String regex = rule.getRegex();
                 Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(text);
-                if(matcher.find()){
+                int matchCnt = 0;
+                while(matcher.find()){
+                    matchCnt ++;
+                }
+                if (matchCnt > 0) {
                     String originalSql;
                     if(isSql){
                         originalSql = text;
                     }else{
                         originalSql = null;
                     }
-                    resultList.add(new SqlHit(ruleName, index, originalSql));
+                    resultList.add(new SqlHit(ruleName, index, originalSql, matchCnt));
                 }
             }catch(Throwable e){
                 logger.error(e.getMessage(), e);

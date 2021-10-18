@@ -110,4 +110,16 @@ public class RegexTest {
         Matcher matcher = pattern.matcher(sql);
         System.out.println("regex match? "+matcher.find());
     }
+
+    @Test
+    public void test11() {
+        String sql="select rs.*, rownum from t order by rownum, rownum fdafs rownum";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+        String regex = "rownum(\\s+?.*?)*\\s+rownum";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        System.out.println(String.format("regex match: %s, match count: %s",matcher.find(), matcher.groupCount()));
+    }
 }

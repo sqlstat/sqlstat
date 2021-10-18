@@ -122,8 +122,12 @@ public class XmlCheckService implements CheckService {
                 String regex = rule.getRegex();
                 Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(sql);
-                if(matcher.find()){
-                    resultList.add(new SqlHit("targetSqlRuleMap", index, sql, sqlId));
+                int matchCnt = 0;
+                while(matcher.find()){
+                    matchCnt ++;
+                }
+                if (matchCnt > 0) {
+                    resultList.add(new SqlHit(  "targetSqlRuleMap", index, sql, sqlId, matchCnt));
                 }
             }catch(Throwable e){
                 logger.error(e.getMessage(), e);
