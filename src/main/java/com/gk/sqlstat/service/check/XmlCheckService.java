@@ -2,10 +2,12 @@ package com.gk.sqlstat.service.check;
 
 import com.gk.sqlstat.constant.AppConstants;
 import com.gk.sqlstat.constant.FileType;
+import com.gk.sqlstat.constant.XmlType;
 import com.gk.sqlstat.model.FileTarget;
 import com.gk.sqlstat.model.Rule;
 import com.gk.sqlstat.model.SqlHit;
 import com.gk.sqlstat.util.FileUtil;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -15,6 +17,7 @@ import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -48,55 +51,59 @@ public class XmlCheckService implements CheckService {
         String projectName = fileTarget.getProject();
         try {
             Document document = FileUtil.read(fileTarget, reader);
-            //ibatis
-            if(document.getDocType() != null && (document.getDocType().getElementName().equals("sqlMap")
-                || document.getDocType().getElementName().equals("mapper"))){
-                logger.trace("ibatis/mybatis mapping file found:"+document.getName());
-                fileTarget.setSqlMapOrMapper(true);
-                Element xmlroot = document.getRootElement();
-                Iterator it = xmlroot.elementIterator();
-                while (it.hasNext()) {
-                    Element element = (Element) it.next();
-                    logger.info("element name: {}}", element.getName());
-                    if(AppConstants.XML_SQL_TAGS.contains(element.getName())){
-                        fileTarget.setXmlSqlCnt(fileTarget.getXmlSqlCnt() + 1);
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for(Node node : element.content()){
-                            stringBuilder.append(node.asXML());
-                        }
-//                        String sql = element.getStringValue().trim();
-                        String sql = stringBuilder.toString();
-                        String sqlId = element.attributeValue("id");
-                        logger.trace("ibatis/mybatis sql found:" + sql);
-//                        List<SqlHit> sqlHitList = commonFileCheckService.checkText(sql, fileType, true);
-                        List<SqlHit> sqlHitList = checkSql(sql, sqlId);
-                        if(!sqlHitList.isEmpty()){
-                            fileTarget.setTarget(true);
-                            List<SqlHit> addList = fileTarget.getSqlHitList();
-                            if(addList == null){
-                                addList = sqlHitList;
-                                fileTarget.setSqlHitList(addList);
-                            }else{
-                                addList.addAll(sqlHitList);
-                            }
-                            if (document.getDocType().getElementName().equals("sqlMap")) {
-                                fileTarget.setSqlMapSqlHitCnt(fileTarget.getSqlMapSqlHitCnt() + 1);
-                            } else if (document.getDocType().getElementName().equals("mapper")) {
-                                fileTarget.setMapperSqlHitCnt(fileTarget.getMapperSqlHitCnt() + 1);
-                            }
-                            //no sql parser
-                            fileTarget.addSqlItemNum();
-                            logger.info("{} is found, project:{}, file:{},  sql:{}",
-                                    fileType, projectName, fileTarget.getFilePath(), fileTarget.isTarget(), sql);
-                        }
-                        // 替换
-//                        FileWriter fileWriter = new FileWriter("saa");
-//                        fileWriter.write(document);
-//                        XMLWriter xmlWriter = new XMLWriter(fileWriter);
-//                        xmlWriter.write(document);
-//                        "as".replaceAll()
+            logger.trace("xml file found:"+document.getName());
+            fileTarget.setSqlMapOrMapper(true);
+            Element xmlroot = document.getRootElement();
+            Iterator it = xmlroot.elementIterator();
+            while (it.hasNext()) {
+                Element element = (Element) it.next();
+                logger.info("element name: {}}", element.getName());
+                String sql = "";
+                String sqlId = "";
+                StringBuilder stringBuilder = new StringBuilder();
+                if (document.getDocType() != null
+                        && (document.getDocType().getElementName().equals("sqlMap") || document.getDocType().getElementName().equals("mapper"))
+                        && AppConstants.XML_SQL_TAGS.contains(element.getName())) {
+                    fileTarget.setXmlSqlCnt(fileTarget.getXmlSqlCnt() + 1); // mapper\sqlMap中的一个标签认为是一个sql
+                    sqlId = element.attributeValue("id");
+                    logger.trace("ibatis/mybatis sql found:" + sql);
 
+                } else {
+                    // 除了sqlMap、mapper之外的普通xml处理，将每个标签的属性和内容取出进行匹配
+                    List<Attribute> attributes = element.attributes();
+                    boolean hasAttribute = attributes != null && attributes.size() > 0;
+                    sqlId = String.format("tagName: %s, attributeName: %s, attributeValue: %s", element.getName(), (hasAttribute? element.attribute(0).getName():""), hasAttribute?element.attribute(0).getValue():"");
+                    for (Attribute attribute: element.attributes()) {
+                        stringBuilder.append(attribute.getName() + "="+ attribute.getValue());
+                        stringBuilder.append('\n');
                     }
+                }
+                for (Node node : element.content()) {
+                    stringBuilder.append(node.asXML());
+                }
+                sql = stringBuilder.toString();
+                List<SqlHit> sqlHitList = checkSql(sql, sqlId);
+                if (!sqlHitList.isEmpty()) {
+                    fileTarget.setTarget(true);
+                    List<SqlHit> addList = fileTarget.getSqlHitList();
+                    if (addList == null) {
+                        addList = sqlHitList;
+                        fileTarget.setSqlHitList(addList);
+                    } else {
+                        addList.addAll(sqlHitList);
+                    }
+                    fileTarget.setXmlType(XmlType.XML_NORMAL);
+                    if (document.getDocType() != null && document.getDocType().getElementName().equals("sqlMap")) {
+                        fileTarget.setSqlMapSqlHitCnt(fileTarget.getSqlMapSqlHitCnt() + 1);
+                        fileTarget.setXmlType(XmlType.XML_SQLMAP);
+                    } else if (document.getDocType() != null && document.getDocType().getElementName().equals("mapper")) {
+                        fileTarget.setMapperSqlHitCnt(fileTarget.getMapperSqlHitCnt() + 1);
+                        fileTarget.setXmlType(XmlType.XML_MAPPER);
+                    }
+                    //no sql parser
+                    fileTarget.addSqlItemNum();
+                    logger.info("{} is found, project:{}, file:{},  sql:{}",
+                            fileType, projectName, fileTarget.getFilePath(), fileTarget.isTarget(), sql);
                 }
             }
 

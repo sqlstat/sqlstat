@@ -7,4 +7,5 @@ import java.util.Set;
 
 public class AppConstants {
     public static Set<String> XML_SQL_TAGS = Sets.newHashSet("insert", "select", "delete", "update", "sql", "procedure", "resultMap", "parameterMap");
+
 }

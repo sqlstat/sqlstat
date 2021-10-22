@@ -1,5 +1,6 @@
 package com.gk.sqlstat.service;
 
+import com.gk.sqlstat.constant.FileType;
 import com.gk.sqlstat.model.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -62,7 +63,7 @@ public class TextOutService extends AbstractOutService implements OutService {
     }
 
     private void outputExcel(ResultSet resultSet){
-        List<String> header = Arrays.asList("file", "rule map name", "ruleId", "regex", "Suggestion", "sqlId", "regexMatchCnt", "originalSql");
+        List<String> header = Arrays.asList("file", "filetype", "rule map name", "ruleId", "regex", "Suggestion", "sqlId", "regexMatchCnt", "originalSql");
         Workbook workbook = new SXSSFWorkbook();
         Sheet sheet = workbook.createSheet("sql hit details");
         sheet.setDefaultRowHeight((short) 400);
@@ -87,6 +88,14 @@ public class TextOutService extends AbstractOutService implements OutService {
             for(FileTarget fileTarget : projectStat.fileTargetList){
                 try {
                     String fileName = fileTarget.getFilePath();
+                    String fileType = "";
+                    if (fileTarget.isJarFile()){
+                        fileType = "jar-";
+                    }
+                    fileType = fileType + fileTarget.getFileType().type;
+                    if (fileTarget.getFileType().equals(FileType.XML)) {
+                        fileType = fileType +  "-" + fileTarget.getXmlType().type;
+                    }
                     for(SqlHit sqlHit : fileTarget.getSqlHitList()){
                         String ruleMapName = sqlHit.getRuleMapName();
                         int ruleId = sqlHit.getRuleId();
@@ -95,6 +104,7 @@ public class TextOutService extends AbstractOutService implements OutService {
                         Row row = sheet.createRow(rowNum++);
                         int cellNum = 0;
                         row.createCell(cellNum++).setCellValue(fileName);
+                        row.createCell(cellNum++).setCellValue(fileType);
                         row.createCell(cellNum++).setCellValue(ruleMapName);
                         row.createCell(cellNum++).setCellValue(ruleId);
                         row.createCell(cellNum++).setCellValue(rule.getRegex());

@@ -1,10 +1,19 @@
 package com.gk.sqlstat.constant;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum FileType {
-    JAVA,C, XML, SHELL, SQL, CTL, OTHERS, TASKEND, JAR;
+    JAVA("java"),C("c"), XML("xml"), SHELL("shell"), SQL("sql"), CTL("ctl"), OTHERS("other"), TASKEND("taskend"), JAR("jar");
+
+
+
+    public String type;
+
+    FileType(String type){
+        this.type = type;
+    }
 
     private static final Map<String, FileType> extentionMap = new HashMap<String, FileType>(){
         {

@@ -38,22 +38,22 @@ public class CommonFileCheckService implements CheckService {
     @PostConstruct
     public void init(){
         fileTypeRuleMap = new HashMap<>();
-        fileTypeRuleMap.put(FileType.CTL, ctlRuleMap);
-        fileTypeRuleMap.put(FileType.JAVA, commonSqlRuleMap);
-        fileTypeRuleMap.put(FileType.C, commonSqlRuleMap);
-        fileTypeRuleMap.put(FileType.XML, commonSqlRuleMap);
-        fileTypeRuleMap.put(FileType.SHELL, commonSqlRuleMap);
-        fileTypeRuleMap.put(FileType.SQL, commonSqlRuleMap);
-        fileTypeRuleMap.put(FileType.OTHERS, commonSqlRuleMap);
+        fileTypeRuleMap.put(FileType.CTL, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.JAVA, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.C, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.XML, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.SHELL, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.SQL, targetSqlRuleMap);
+        fileTypeRuleMap.put(FileType.OTHERS, targetSqlRuleMap);
 
         fileTypeRuleNameMap = new HashMap<>();
-        fileTypeRuleNameMap.put(FileType.CTL, "ctlRuleMap");
-        fileTypeRuleNameMap.put(FileType.JAVA, "commonSqlRuleMap");
-        fileTypeRuleNameMap.put(FileType.C, "commonSqlRuleMap");
-        fileTypeRuleNameMap.put(FileType.XML, "commonSqlRuleMap");
-        fileTypeRuleNameMap.put(FileType.SHELL, "commonSqlRuleMap");
-        fileTypeRuleNameMap.put(FileType.SQL, "commonSqlRuleMap");
-        fileTypeRuleNameMap.put(FileType.OTHERS, "commonSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.CTL, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.JAVA, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.C, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.XML, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.SHELL, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.SQL, "targetSqlRuleMap");
+        fileTypeRuleNameMap.put(FileType.OTHERS, "targetSqlRuleMap");
     }
 
     @Override

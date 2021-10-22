@@ -32,9 +32,6 @@ public class JarFileCheckService implements CheckService {
             }
         }
         if (actualFileType != null) {
-            if (fileTarget.getFilePath().endsWith("mapper.xml")) {
-                System.out.println(fileTarget);
-            }
             fileTarget = sqlStatCheckService.check(fileTarget);
         }
         return fileTarget;

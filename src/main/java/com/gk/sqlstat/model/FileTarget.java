@@ -1,6 +1,7 @@
 package com.gk.sqlstat.model;
 
 import com.gk.sqlstat.constant.FileType;
+import com.gk.sqlstat.constant.XmlType;
 import lombok.Data;
 
 import java.io.File;
@@ -30,6 +31,7 @@ public class FileTarget {
     private int xmlSqlCnt; // xml 中sql 总数
     private int xmlFileCnt; // xml 文件总数统计
     private boolean isSqlMapOrMapper; // 是否时sqlMap或者mapper类型的xml文件
+    private XmlType xmlType;
 
     // java类型文件统计
     private int javaFileCnt; // java文件总数统计
