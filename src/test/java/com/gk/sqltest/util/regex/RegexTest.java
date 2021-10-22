@@ -240,4 +240,40 @@ public class RegexTest {
         }
         System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
     }
+
+    @Test
+    public void test19() {
+        String sql="dfasfas oracle.jdbc.OracleDriver";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "oracle.jdbc.(driver.OracleDriver|OracleDriver)";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test20() {
+        String sql="exp ";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "\\s*(exp|imp|expdp|impdp)\\s+";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+
 }
