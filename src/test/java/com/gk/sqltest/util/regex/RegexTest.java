@@ -189,4 +189,55 @@ public class RegexTest {
         }
         System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
     }
+
+    @Test
+    public void test16() {
+        String sql="select * from a order by b last";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "nulls\\s+(first|last)";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test17() {
+        String sql="select dense_rank() over() from a order by b last";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "dense_rank\\s*?\\(.*?\\)\\s+?over";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test18() {
+        String sql="insert all s ";
+//        String sql="listagg (rs.*, rownum from t order by) within group";
+        System.out.println(sql);
+//        String regex = "[><!]\\s+?[=>]";
+        String regex = "INSERT\\s+ALL";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
 }

@@ -9,13 +9,16 @@ import com.gk.sqlstat.util.FileUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.io.SAXModifier;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +89,13 @@ public class XmlCheckService implements CheckService {
                             logger.info("{} is found, project:{}, file:{},  sql:{}",
                                     fileType, projectName, fileTarget.getFilePath(), fileTarget.isTarget(), sql);
                         }
+                        // 替换
+//                        FileWriter fileWriter = new FileWriter("saa");
+//                        fileWriter.write(document);
+//                        XMLWriter xmlWriter = new XMLWriter(fileWriter);
+//                        xmlWriter.write(document);
+//                        "as".replaceAll()
+
                     }
                 }
             }
