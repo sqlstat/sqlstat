@@ -213,7 +213,7 @@ public class RegexTest {
 //        String sql="listagg (rs.*, rownum from t order by) within group";
         System.out.println(sql);
 //        String regex = "[><!]\\s+?[=>]";
-        String regex = "dense_rank\\s*?\\(.*?\\)\\s+?over";
+        String regex = "\\s+(\\s*|dense_)rank\\s*?\\(.*?\\)\\s+?over";
 
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sql);
@@ -265,6 +265,36 @@ public class RegexTest {
         System.out.println(sql);
 //        String regex = "[><!]\\s+?[=>]";
         String regex = "\\s*(exp|imp|expdp|impdp)\\s+";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test21() {
+        String sql="spool off";
+        System.out.println(sql);
+        String regex = "\\s*spool\\s+";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(sql);
+        int matchCnt = 0;
+        while(matcher.find()) {
+            matchCnt ++;
+        }
+        System.out.println(String.format("regex match: %s, match count: %s",matchCnt >0?true:false, matchCnt));
+    }
+
+    @Test
+    public void test22() {
+        String sql="delete from table, table2 b where a.xx = ";
+        System.out.println(sql);
+        String regex = "delete\\s+from\\s+(\\w+)\\s+(\\w+)\\s+(where|left|join|inner)";
 
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sql);

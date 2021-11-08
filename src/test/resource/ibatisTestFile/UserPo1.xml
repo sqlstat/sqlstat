@@ -14,5 +14,9 @@ type="com.gk.demos.ibatis.data.po.UserPo"/>
 		select SYSTIMESTAMP from dual;
 	</select>
 
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/jdbc/erp"/>
+	</bean>
+
 </sqlMap>
 
