@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gk.sqlstat.dao.SqlstatRuleMapper">
+  <resultMap id="BaseResultMap" type="com.gk.sqlstat.model.SqlstatRule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rule_type" jdbcType="TINYINT" property="ruleType" />
+    <result column="rule_regex" jdbcType="VARCHAR" property="ruleRegex" />
+    <result column="suggestion" jdbcType="VARCHAR" property="suggestion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rule_type, rule_regex, suggestion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sqlstat_rule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sqlstat_rule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.gk.sqlstat.model.SqlstatRule">
+    insert into sqlstat_rule (id, rule_type, rule_regex, 
+      suggestion)
+    values (#{id,jdbcType=INTEGER}, #{ruleType,jdbcType=TINYINT}, #{ruleRegex,jdbcType=VARCHAR}, 
+      #{suggestion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gk.sqlstat.model.SqlstatRule">
+    insert into sqlstat_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ruleType != null">
+        rule_type,
+      </if>
+      <if test="ruleRegex != null">
+        rule_regex,
+      </if>
+      <if test="suggestion != null">
+        suggestion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ruleType != null">
+        #{ruleType,jdbcType=TINYINT},
+      </if>
+      <if test="ruleRegex != null">
+        #{ruleRegex,jdbcType=VARCHAR},
+      </if>
+      <if test="suggestion != null">
+        #{suggestion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gk.sqlstat.model.SqlstatRule">
+    update sqlstat_rule
+    <set>
+      <if test="ruleType != null">
+        rule_type = #{ruleType,jdbcType=TINYINT},
+      </if>
+      <if test="ruleRegex != null">
+        rule_regex = #{ruleRegex,jdbcType=VARCHAR},
+      </if>
+      <if test="suggestion != null">
+        suggestion = #{suggestion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gk.sqlstat.model.SqlstatRule">
+    update sqlstat_rule
+    set rule_type = #{ruleType,jdbcType=TINYINT},
+      rule_regex = #{ruleRegex,jdbcType=VARCHAR},
+      suggestion = #{suggestion,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getRuleByType" parameterType="integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from sqlstat_rule
+    where rule_type = #{type}
+  </select>
+</mapper>
